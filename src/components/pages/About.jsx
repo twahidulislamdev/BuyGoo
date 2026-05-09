@@ -89,7 +89,7 @@ const About = () => {
       {/* HERO - Clean & Minimal */}
       <Section className="pt-16 pb-20">
         <Container>
-          <div className="max-w-3xl mx-auto text-center mb-16">
+          <div className="max-w-3xl mx-auto text-center mb-15 px-3">
             <p className="text-red-500 text-xs tracking-[3px] uppercase font-medium mb-4">
               PRIME TECH STORE
             </p>
@@ -114,7 +114,7 @@ const About = () => {
         <Container>
           <img
             src="https://images.unsplash.com/photo-1468495244123-6c6c332eeece"
-            className="w-full rounded-3xl border border-black/10"
+            className="w-full px-3 rounded-3xl border border-black/10"
             alt="Tech lifestyle"
           />
         </Container>
@@ -134,13 +134,13 @@ const About = () => {
       {/* FEATURES */}
       <Section>
         <Container>
-          <div className="text-center mb-16">
+          <div className="text-center mb-15 px-3">
             <h2 className="text-4xl font-light tracking-tight">
               Why <span className="text-red-500">Prime Tech</span>
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 px-3">
             {features.map((f) => (
               <FeatureCard key={f.num} {...f} />
             ))}
@@ -151,13 +151,13 @@ const About = () => {
       {/* STORY */}
       <Section className="bg-zinc-50">
         <Container>
-          <div className="grid md:grid-cols-2 gap-16 items-center">
+          <div className="grid md:grid-cols-2 gap-15 items-center px-3">
             <img
               src="https://images.unsplash.com/photo-1519389950473-47ba0277781c"
-              className="rounded-3xl border border-black/10 w-full"
+              className="rounded-3xl px-3 border border-black/10 w-full"
               alt="Our journey"
             />
-            <div className="space-y-6">
+            <div className="space-y-6 px-3">
               <h2 className="text-4xl font-light tracking-tight">
                 Our <span className="text-red-500">Journey</span>
               </h2>
@@ -177,12 +177,12 @@ const About = () => {
       {/* PROMISE */}
       <Section>
         <Container>
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-2xl mx-auto px-3">
             <h2 className="text-4xl font-light tracking-tight text-center">
               Our <span className="text-red-500">Promise</span>
             </h2>
 
-            <ul className="space-y-6 max-w-md mx-auto">
+            <ul className="space-y-6 max-w-md mx-auto flex justify-center items-center flex-col mt-10">
               {promises.map((p) => (
                 <CheckItem key={p} text={p} />
               ))}

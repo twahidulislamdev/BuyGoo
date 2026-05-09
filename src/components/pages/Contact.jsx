@@ -52,141 +52,150 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-20 px-4">
-      {/* HERO */}
-      <div className="text-center mb-16">
-        <h1 className="text-5xl font-bold text-gray-900">
-          Get in <span className="text-red-500">Touch</span>
-        </h1>
-        <p className="text-gray-500 mt-4 max-w-xl mx-auto">
-          Have a question about your order, products, or anything else? Our team
-          is ready to help you.
-        </p>
-      </div>
-
-      <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-10">
-        {/* LEFT SIDE */}
-        <div className="space-y-6">
-          {/* INFO CARD */}
-          <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition">
-            <h3 className="text-xl font-semibold mb-6 text-gray-900">
-              Contact Info
-            </h3>
-
-            <div className="space-y-5">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-red-50 rounded-xl">
-                  <FiMapPin className="text-red-500" />
-                </div>
-                <span className="text-gray-700">Dhaka, Bangladesh</span>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-red-50 rounded-xl">
-                  <FiMail className="text-red-500" />
-                </div>
-                <span className="text-gray-700">twahid746@gmail.com</span>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-red-50 rounded-xl">
-                  <FiPhone className="text-red-500" />
-                </div>
-                <span className="text-gray-700">+88 01825653993</span>
-              </div>
-            </div>
-
-            <div className="mt-6 pt-5 border-t text-sm text-gray-500">
-              ⚡ Reply within a few hours
-            </div>
-          </div>
-
-          <div className="rounded-2xl overflow-hidden shadow-md">
-            <iframe
-              src="https://www.google.com/maps?q=Dhaka&output=embed"
-              className="w-full h-[220px]"
-              loading="lazy"
-            ></iframe>
-          </div>
+    <div className="min-h-screen bg-gray-50 py-10 lg:py-20 px-4 md:px-5 overflow-x-hidden">
+      <div className="max-w-6xl mx-auto">
+        {/* HERO */}
+        <div className="text-center mb-10 lg:mb-16">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
+            Get in <span className="text-red-500">Touch</span>
+          </h1>
+          <p className="text-gray-500 mt-5 max-w-xl mx-auto">
+            Have a question about your order, products, or anything else? Our
+            team is ready to help you.
+          </p>
         </div>
 
-        {/* FORM */}
-        <div className="lg:col-span-2 bg-white p-8 rounded-2xl shadow-md">
-          <h2 className="text-2xl font-bold mb-6">Send Message</h2>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10">
+          {/* LEFT SIDE */}
+          <div className="space-y-4 lg:space-y-6">
+            {/* INFO CARD */}
+            <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition">
+              <h3 className="text-xl font-semibold mb-6 text-gray-900">
+                Contact Info
+              </h3>
 
-          {/* STATUS */}
-          {status && (
-            <div className="mb-4 text-sm">
-              {status === "success" && (
-                <p className="text-green-600">Message sent successfully!</p>
-              )}
-              {status === "error" && (
-                <p className="text-red-600">Failed to send message.</p>
-              )}
-              {status === "validation" && (
-                <p className="text-yellow-600">Please fill all fields.</p>
-              )}
+              <div className="space-y-5">
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="p-3 bg-red-50 rounded-xl">
+                    <FiMapPin className="text-red-500" />
+                  </div>
+                  <span className="text-gray-700 break-words">
+                    Dhaka, Bangladesh
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="p-3 bg-red-50 rounded-xl">
+                    <FiMail className="text-red-500" />
+                  </div>
+                  <span className="text-gray-700 break-words">
+                    twahid746@gmail.com
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="p-3 bg-red-50 rounded-xl">
+                    <FiPhone className="text-red-500" />
+                  </div>
+                  <span className="text-gray-700 break-words">
+                    +88 01825653993
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-5 border-t text-sm text-gray-500">
+                ⚡ Reply within a few hours
+              </div>
             </div>
-          )}
 
-          <div className="grid md:grid-cols-2 gap-5">
-            <input
-              type="text"
-              name="name"
-              placeholder="Full Name"
-              value={formData.name}
-              onChange={handleChange}
-              className="p-4 bg-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-red-400"
-            />
-
-            <input
-              type="email"
-              name="email"
-              placeholder="Email Address"
-              value={formData.email}
-              onChange={handleChange}
-              className="p-4 bg-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-red-400"
-            />
+            {/* MAP */}
+            <div className="rounded-2xl overflow-hidden shadow-md w-full">
+              <iframe
+                src="https://www.google.com/maps?q=Dhaka&output=embed"
+                className="w-full h-[220px] border-0"
+                loading="lazy"
+              ></iframe>
+            </div>
           </div>
 
-          <div className="mt-5">
-            <select
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              className="w-full p-4 bg-gray-100 rounded-xl outline-none"
+          {/* FORM */}
+          <div className="lg:col-span-2 bg-white p-5 sm:p-6 md:p-8 rounded-2xl shadow-md">
+            <h2 className="text-2xl font-bold mb-6">Send Message</h2>
+
+            {/* STATUS */}
+            {status && (
+              <div className="mb-4 text-sm">
+                {status === "success" && (
+                  <p className="text-green-600">Message sent successfully!</p>
+                )}
+                {status === "error" && (
+                  <p className="text-red-600">Failed to send message.</p>
+                )}
+                {status === "validation" && (
+                  <p className="text-yellow-600">Please fill all fields.</p>
+                )}
+              </div>
+            )}
+
+            <div className="grid md:grid-cols-2 gap-4 md:gap-5">
+              <input
+                type="text"
+                name="name"
+                placeholder="Full Name"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full p-4 bg-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-red-400"
+              />
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full p-4 bg-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-red-400"
+              />
+            </div>
+
+            <div className="mt-5">
+              <select
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                className="w-full p-4 bg-gray-100 rounded-xl outline-none"
+              >
+                <option value="">Select Subject</option>
+                <option>Order Issue</option>
+                <option>Product Inquiry</option>
+                <option>Return / Refund</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div className="mt-5">
+              <textarea
+                name="message"
+                rows="5"
+                placeholder="Write your message..."
+                value={formData.message}
+                onChange={handleChange}
+                className="w-full p-4 bg-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-red-400"
+              ></textarea>
+            </div>
+
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="mt-6 w-full py-4 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition"
             >
-              <option value="">Select Subject</option>
-              <option>Order Issue</option>
-              <option>Product Inquiry</option>
-              <option>Return / Refund</option>
-              <option>Other</option>
-            </select>
+              {loading ? "Sending..." : "Send Message"}
+            </button>
           </div>
-
-          <div className="mt-5">
-            <textarea
-              name="message"
-              rows="5"
-              placeholder="Write your message..."
-              value={formData.message}
-              onChange={handleChange}
-              className="w-full p-4 bg-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-red-400"
-            ></textarea>
-          </div>
-
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="mt-6 w-full py-4 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition"
-          >
-            {loading ? "Sending..." : "Send Message"}
-          </button>
         </div>
       </div>
 
       {/* FOOTER */}
-      <p className="text-center text-gray-400 text-sm mt-16">
+      <p className="text-center text-gray-400 text-sm mt-10 lg:mt-16 px-4">
         We respect your privacy. Your data is safe with us.
       </p>
     </div>
