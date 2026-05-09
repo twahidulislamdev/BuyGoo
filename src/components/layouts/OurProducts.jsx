@@ -6,22 +6,23 @@ import axios from "axios";
 import ProductCard from "../ProductCard";
 
 const OurProducts = () => {
-  const [myProduct, setMyProduct] = useState([]);
+  const [myProducts, setMyProducts] = useState([]);
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
-    async function allDatas() {
+    async function fetchProducts() {
       try {
-        const apiEndpoint =
-          import.meta.env.VITE_PRODUCTS_API ||
-          "https://twahidulislamdev.github.io/product-aip/data/products/index.json";
-        const { data } = await axios.get(apiEndpoint);
-        setMyProduct(data.products);
-      } catch (err) {
-        console.error("Failed to load products:", err);
+        const res = await axios.get(
+          "http://localhost:3000/api/v1/product/getallproducts",
+        );
+        const data = res.data.products || res.data;
+        setMyProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
       }
     }
-    allDatas();
+
+    fetchProducts();
   }, []);
 
   return (
@@ -42,17 +43,16 @@ const OurProducts = () => {
 
         {/* Products grid retrieved from API */}
         <div className="w-full mt-5 px-2">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 justify-items-center">
-            {(showAll ? myProduct : myProduct.slice(0, 8)).map((prod) => (
-              <div key={prod.id} className="w-full md:w-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3  justify-items-center">
+            {(showAll ? myProducts : myProducts.slice(0, 8)).map((item) => (
+              <div key={item.id} className="w-full">
                 <ProductCard
-                  title={prod.title}
-                  price={prod.price}
-                  imgSrcFirst={prod.image}
-                  imgAlt={prod.title}
-                  badgeText={prod.badge}
-                  badgeClassName={prod.badge ? "bg-green-300" : ""}
-                  className="w-full md:w-auto h-48 md:h-auto"
+                  title={item.name}
+                  price={item.price}
+                  imgSrcFirst={item.image}
+                  imgAlt={item.name}
+                  badgeText={item.badge}
+                  badgeClassName={item.badge ? "bg-green-300" : ""}
                 />
               </div>
             ))}
@@ -60,7 +60,7 @@ const OurProducts = () => {
         </div>
 
         {/* See More toggle */}
-        {myProduct.length > 2 && (
+        {myProducts.length > 2 && (
           <div className="flex justify-center mt-6">
             <button
               onClick={() => setShowAll((prev) => !prev)}

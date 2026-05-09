@@ -24,12 +24,9 @@ const BestSelling = () => {
     async function fetchProducts() {
       try {
         const res = await axios.get(
-          "https://twahidulislamdev.github.io/product-aip/data/products/index.json",
+          "http://localhost:3000/api/v1/product/getallproducts",
         );
-
-        // If your JSON has nested structure like { products: [] }
         const data = res.data.products || res.data;
-
         setProducts(data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -75,7 +72,7 @@ const BestSelling = () => {
         </div>
 
         {/* Slider */}
-        <div className="w-full mt-5 px-2">
+        <div className="w-full mt-5 px-2 lg:px-0">
           <Swiper
             modules={[Autoplay, Navigation]}
             spaceBetween={16}
