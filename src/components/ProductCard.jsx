@@ -13,7 +13,7 @@ const ProductCard = ({
 }) => {
   return (
     <div
-      className={`relative w-full h-[330px] lg:h-[380px] flex flex-col group border-2 border-gray-200 overflow-hidden ${productClassName}`}
+      className={`relative w-full h-[330px] lg:h-[400px] flex flex-col group border-2 border-gray-200 overflow-hidden ${productClassName}`}
     >
       <Link to={"/quickview"} className="w-full">
         <div className="relative w-full h-[250px] lg:h-[280px] border-b-2 border-neutral-300">

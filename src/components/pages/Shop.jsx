@@ -12,10 +12,11 @@ const Shop = () => {
   useEffect(() => {
     async function allDatas() {
       try {
-        const { data } = await axios.get(
-          "https://twahidulislamdev.github.io/product-aip/data/products/index.json",
+        const res = await axios.get(
+          "http://localhost:3000/api/v1/product/getallproducts",
         );
-        setMyProduct(data.products);
+        const data = res.data.products || res.data;
+        setMyProduct(data);
       } catch (err) {
         console.error("Failed to load products:", err);
       }
@@ -218,13 +219,12 @@ const Shop = () => {
                 <ProductCard
                   key={index}
                   className=""
-                  title={item.title}
+                  title={item.name}
                   price={item.price}
                   imgSrcFirst={item.image}
-                  imgAlt={item.title || "Product Image"}
-                  text={"New"}
-                  brand={item.brand}
-                  category={item.category}
+                  imgAlt={item.name || "Product Image"}
+                  badgeText={item.badge}
+                  badgeClassName={item.badge ? "bg-green-300" : ""}
                 />
               ))}
             </div>
