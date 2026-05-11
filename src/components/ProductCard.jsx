@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ShoppingCart } from "lucide-react";
 import { HiOutlineHeart } from "react-icons/hi2";
 
 const ProductCard = ({
@@ -10,54 +11,71 @@ const ProductCard = ({
   badgeClassName,
   priceClassName,
   productClassName,
+  currency = "৳",
 }) => {
   return (
     <div
-      className={`relative w-full h-[330px] lg:h-[400px] flex flex-col group border-2 border-gray-200 overflow-hidden ${productClassName}`}
+      className={`relative w-full flex flex-col bg-white rounded-2xl shadow-sm border border-neutral-400 overflow-hidden transition-shadow duration-300 hover:shadow-md ${productClassName}`}
+      style={{ fontFamily: "'Segoe UI', sans-serif" }}
     >
-      <Link to={"/quickview"} className="w-full">
-        <div className="relative w-full h-[250px] lg:h-[280px] border-b-2 border-neutral-300">
-          {/* Default Image */}
+      {/* Badge */}
+      {badgeText && (
+        <div
+          className={`absolute top-3 left-3 py-1 px-3 text-xs font-semibold rounded-full z-10 ${badgeClassName}`}
+        >
+          {badgeText}
+        </div>
+      )}
+
+      {/* Wishlist Icon */}
+      <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <button className="w-8 h-8 rounded-full bg-gray-500 hover:bg-red-50 flex items-center justify-center transition-colors duration-200">
+          <HiOutlineHeart className="text-gray-500 hover:text-red-500 text-lg transition-colors duration-200" />
+        </button>
+      </div>
+
+      {/* Image Area */}
+      <Link to={"/quickview"} className="w-full group">
+        <div
+          className="relative w-full flex items-center justify-center overflow-hidden"
+          style={{ height: "260px" }}
+        >
           <img
             src={imgSrcFirst}
             alt={imgAlt}
-            className="absolute inset-0 w-[150px] lg:w-full h-[150px] lg:h-[255px] object-cover transition-opacity duration-300 flex justify-center items-center m-auto"
+            className="object-contain w-auto h-[220px] transition-transform duration-500 group-hover:scale-105"
           />
-
-          {/* Group Hover Part */}
-          <div className="lg:p-0 space-y-3 absolute bottom-0 left-0 w-full lg:opacity-0 lg:translate-y-4 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 sm:opacity-100 sm:translate-y-0 transition-all duration-300 ease-in-out delay-100">
-            {/* Add To Cart */}
-            <div className="w-full h-[30px] lg:h-[45px] flex justify-center items-center m-auto hover:cursor-pointer bg-black hover:bg-mainColor transition-colors duration-300">
-              <p className="text-sm sm:text-md lg:text-lg font-medium text-white">
-                ADD TO CART
-              </p>
-            </div>
-          </div>
-
-          {/* Wishlist Icon */}
-          <div className="w-[30px] h-[30px] lg:w-[35px] lg:h-[35px] rounded-full bg-black hover:bg-mainColor absolute top-2 right-2 hover:cursor-pointer flex items-center justify-center lg:opacity-0 lg:translate-y-4 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 sm:opacity-100 sm:translate-y-0 transition-all duration-300 ease-in-out delay-100 z-10">
-            <HiOutlineHeart className="text-white text-lg lg:text-2xl transition-colors duration-300" />
-          </div>
         </div>
       </Link>
 
-      {/* Badge */}
-      <div
-        className={`absolute top-2 left-2 py-1 px-3 lg:py-1.5 lg:px-4 text-black font-bold text-center text-xs lg:text-sm z-10 ${badgeClassName}`}
-      >
-        {badgeText}
-      </div>
-      {/* Info */}
-      <div className="flex-1 flex flex-col px-3 lg:px-3">
-        <h3 className="text-[#262626] text-sm lg:text-xl font-bold lg:pb-2 pt-2">
+      {/* Info Area */}
+      <div className="px-4 pt-4 pb-5 flex flex-col gap-3 border-t-1 rounded-t-xl border-neutral-200">
+        {/* Title */}
+        <h3 className="text-[#1a1a1a text-xl font-semibold leading-snug text-center">
           {title}
         </h3>
-        <div className="flex justify-between items-center pt-1 pb-2">
-          <h4
-            className={`text-mainColor text-sm lg:text-xl font-bold ${priceClassName}`}
+
+        {/* Price */}
+        <div className={`flex justify-center items-baseline gap-1 ${priceClassName}`}>
+          <span className="text-[#1a1a1a] text-3xl font-extrabold">
+            {currency}
+          </span>
+          <span className="text-[#1a1a1a] text-xl font-bold tracking-tight">
+            {typeof price === "number" ? price.toLocaleString() : price}
+          </span>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-2 mt-1">
+          <Link
+            to={"/quickview"}
+            className="flex-1 flex items-center justify-center py-2.5 rounded-full border border-gray-300 text-base font-medium text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all duration-250"
           >
-            ${price.toFixed(2)}
-          </h4>
+            Shop Now
+          </Link>
+          <button className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-300 hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-all duration-250 text-[#1a1a1a] cursor-pointer">
+            <ShoppingCart size={16} />
+          </button>
         </div>
       </div>
     </div>

@@ -204,7 +204,7 @@ const Shop = () => {
             </div>
           </div>
 
-          {/* 🌑 Overlay (Mobile Only) */}
+          {/* Overlay (Mobile Only) */}
           {showFilter && (
             <div
               onClick={() => setShowFilter(false)}
@@ -212,7 +212,7 @@ const Shop = () => {
             />
           )}
 
-          {/* 🛍️ Product Grid */}
+          {/* Product Grid */}
           <div className="w-full lg:w-[75%] mx-3">
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-x-3 gap-y-8">
               {myProduct.map((item, index) => (
