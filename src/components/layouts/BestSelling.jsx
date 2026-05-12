@@ -1,10 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
-
 import { Link } from "react-router-dom";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
-
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 import "swiper/css";
@@ -19,7 +16,7 @@ const BestSelling = () => {
 
   const [products, setProducts] = useState([]);
 
-  // 🔥 Fetch Products
+  // Fetch Products
   useEffect(() => {
     async function fetchProducts() {
       try {

@@ -35,7 +35,7 @@ const ProductCard = ({
       </div>
 
       {/* Image Area */}
-      <Link to={"/quickview"} className="w-full group">
+      <Link to={"/product-details"} className="w-full group">
         <div
           className="relative w-full flex items-center justify-center overflow-hidden"
           style={{ height: "260px" }}
@@ -49,14 +49,16 @@ const ProductCard = ({
       </Link>
 
       {/* Info Area */}
-      <div className="px-4 pt-4 pb-5 flex flex-col gap-3 border-t-1 rounded-t-xl border-neutral-200">
+      <div className="px-4 pt-4 pb-5 flex flex-col gap-3  rounded-t-2xl border-t-1 border-neutral-300">
         {/* Title */}
         <h3 className="text-[#1a1a1a text-xl font-semibold leading-snug text-center">
           {title}
         </h3>
 
         {/* Price */}
-        <div className={`flex justify-center items-baseline gap-1 ${priceClassName}`}>
+        <div
+          className={`flex justify-center items-baseline gap-1 ${priceClassName}`}
+        >
           <span className="text-[#1a1a1a] text-3xl font-extrabold">
             {currency}
           </span>
@@ -68,12 +70,12 @@ const ProductCard = ({
         {/* Actions */}
         <div className="flex items-center gap-2 mt-1">
           <Link
-            to={"/quickview"}
-            className="flex-1 flex items-center justify-center py-2.5 rounded-full border border-gray-300 text-base font-medium text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all duration-250"
+            to={"/product-details"}
+            className="flex-1 flex items-center justify-center py-2.5 rounded-full border border-neutral-500 text-base font-medium text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all duration-250"
           >
             Shop Now
           </Link>
-          <button className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-300 hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-all duration-250 text-[#1a1a1a] cursor-pointer">
+          <button className="w-10 h-10 flex items-center justify-center rounded-full border border-neutral-500 hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-all duration-250 text-[#1a1a1a] cursor-pointer">
             <ShoppingCart size={16} />
           </button>
         </div>
