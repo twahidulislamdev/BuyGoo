@@ -52,7 +52,7 @@ const Header = () => {
   return (
     <>
       {/* ================= DESKTOP HEADER ================= */}
-      <div className="hidden lg:block w-full py-5">
+      <div className="hidden lg:block w-full py-3">
         <Container>
           <Flex className="justify-between items-center">
             <Link to="/">
@@ -208,11 +208,11 @@ const Header = () => {
             </div>
 
             {/* ================= SEARCH ================= */}
-            <div className="flex-1 mx-4 flex justify-center">
+            <div className="flex-1 mx-3 flex justify-center">
               <input
                 type="text"
                 placeholder="What are you looking for?"
-                className="w-[200px] lg:w-[500px] py-1.5 lg:py-2 px-3 text-sm lg:text-base border rounded-md bg-[#F5F5F5] outline-none"
+                className="w-[200px] lg:w-[500px] py-1 lg:py-1.5 px-3 text-sm lg:text-base border rounded-md bg-[#F5F5F5] outline-none"
               />
             </div>
 

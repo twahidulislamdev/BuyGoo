@@ -63,15 +63,15 @@ export default function ProductDetails() {
   const nextImage = () => setSelectedImage((p) => (p + 1) % images.length);
 
   return (
-    <div className="min-h-screen bg-[#f8f8f6]">
+    <div className="h-screen bg-white">
       <Container>
         <div className="py-2 lg:py-5 px-3 lg:px-0 grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 items-start">
           {/* ═══════════════ LEFT — Gallery ═══════════════ */}
-          <div className="flex flex-col gap-4 lg:sticky lg:top-6">
+          <div className="flex flex-col gap-3 lg:sticky lg:top-5">
             {/* Main Image */}
             <div
               className="relative overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm group"
-              style={{ height: "420px" }}
+              style={{ height: "450px" }}
             >
               <img
                 key={selectedImage}
@@ -84,7 +84,7 @@ export default function ProductDetails() {
               {/* Gradient overlay bottom */}
               <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/10 to-transparent pointer-events-none rounded-b-2xl" />
 
-              {/* Nav arrows */}
+              {/* Slider Arrows */}
               <button
                 onClick={prevImage}
                 className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white rounded-full shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 border border-gray-100"
@@ -131,7 +131,7 @@ export default function ProductDetails() {
                       ? "border-gray-900 shadow-md ring-2 ring-gray-900/10 scale-[0.97]"
                       : "border-gray-200 hover:border-gray-400 hover:shadow-sm"
                   }`}
-                  style={{ height: "80px" }}
+                  style={{ height: "90px" }}
                 >
                   <img
                     src={img.src}
@@ -147,21 +147,15 @@ export default function ProductDetails() {
           </div>
 
           {/* ═══════════════ RIGHT — Product Info ═══════════════ */}
-          <div className="flex flex-col">
-            {/* Category badge */}
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-widest text-green-500 bg-green-50 px-3 py-1 rounded-full w-fit mb-3 border-1 border-green-500">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-              In Stock
-            </span>
-
+          <div className="flex flex-col overflow-hidden scroll-y-none">
             {/* Title */}
-            <h1 className="text-xl lg:text-3xl font-bold text-neutral-900 leading-tight tracking-tight">
-              Colorful Jacket
+            <h1 className="text-xl lg:text-4xl font-bold text-neutral-900 leading-tight tracking-tight">
+              Colorful Comfortable Jacket
             </h1>
-
             <div className="flex items-end gap-3 mt-3">
-              <span className="text-lg lg:text-xl font-semibold text-neutral-900">$29</span>
-              <span className="text-lg lg:text-xl font-semibold text-neutral-900">.00</span>
+              <span className="text-lg lg:text-xl font-semibold text-neutral-800">
+                $29.00
+              </span>
               <span className="text-sm md:text-base lg:text-lg text-neutral-500 line-through font-medium mb-0.5">
                 $49.00
               </span>
@@ -192,7 +186,6 @@ export default function ProductDetails() {
 
             {/* Price row */}
 
-
             {/* Description */}
             <p className="text-gray-500 text-sm leading-relaxed mt-3">
               Premium quality hoodie crafted with ultra-soft fleece fabric for
@@ -201,11 +194,9 @@ export default function ProductDetails() {
               through any season.
             </p>
 
-            <hr className="mt-3 border-gray-100" />
-
             {/* Color Selector */}
-            <div className="mb-3">
-              <span className="text-xs font-semibold uppercase tracking-widest text-gray-500 block mb-3">
+            <div className="mb-3 mt-5">
+              <span className="text-base font-semibold uppercase tracking-widest text-gray-500 block mb-3">
                 Color —{" "}
                 <span className="text-gray-800 normal-case font-medium tracking-normal">
                   {colorOptions[selectedColor].name}
@@ -229,9 +220,9 @@ export default function ProductDetails() {
             </div>
 
             {/* Size Selector */}
-            <div className="mt-3 mb-5" >
+            <div className="mt-3 mb-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold uppercase tracking-widest text-gray-500">
+                <span className="text-base font-semibold uppercase tracking-widest text-gray-500">
                   Select Size
                 </span>
                 <button className="text-xs text-indigo-500 underline underline-offset-2 hover:text-indigo-700 transition-colors font-medium">
