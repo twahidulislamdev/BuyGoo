@@ -6,6 +6,7 @@ import Shop from "./components/pages/Shop";
 import About from "./components/pages/About";
 import Contact from "./components/pages/Contact";
 import ProductDetails from "./components/pages/ProductDetails";
+import AddToCart from "./components/pages/AddToCart";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
             <Route path="product-details" element={<ProductDetails />} />
+            <Route path="addtocart" element={<AddToCart />} />
           </Route>
         </Routes>
       </BrowserRouter>
