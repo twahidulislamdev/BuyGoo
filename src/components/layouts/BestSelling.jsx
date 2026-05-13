@@ -34,7 +34,7 @@ const BestSelling = () => {
   }, []);
 
   return (
-    <div className="w-full m-auto mt-5 overflow-hidden">
+    <div className="w-full m-auto mt-3 overflow-hidden">
       <Container>
         {/* Top Label */}
         <div className="w-full flex space-x-2 px-2 lg:px-0 pb-3">

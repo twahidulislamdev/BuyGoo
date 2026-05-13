@@ -104,7 +104,7 @@ export default function ShoppingCart() {
                     {/* Delete Cart Item */}
                     <button
                       onClick={() => removeItem(item.id)}
-                      className="w-[30px] h-[30px] rounded-lg bg-neutral-100 border border-neutral-500 flex items-center justify-center text-neutral-800 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition shrink-0 cursor-pointer"
+                      className="w-[30px] h-[30px] rounded-lg bg-neutral-100 border border-neutral-300 flex items-center justify-center text-neutral-800 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition shrink-0 cursor-pointer"
                     >
                       <svg
                         width="13"
@@ -122,7 +122,7 @@ export default function ShoppingCart() {
                   </div>
 
                   <div className="flex items-center justify-between mt-3.5">
-                    <div className="flex items-center bg-neutral-100 border border-neutral-500 rounded-[10px] overflow-hidden">
+                    <div className="flex items-center bg-neutral-100 border border-neutral-300 rounded-[10px] overflow-hidden">
                       <button
                         onClick={() => updateQty(item.id, -1)}
                         className="w-[34px] h-[34px] flex items-center justify-center text-neutral-500 hover:text-gray-900 hover:bg-white text-xl font-semibold transition cursor-pointer"

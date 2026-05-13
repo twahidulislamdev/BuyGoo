@@ -12,10 +12,11 @@ const ProductCard = ({
   priceClassName,
   productClassName,
   currency = "৳",
+  isSmall = false,
 }) => {
   return (
     <div
-      className={`relative w-full flex flex-col bg-white rounded-2xl shadow-sm border border-neutral-400 overflow-hidden transition-shadow duration-300 hover:shadow-md ${productClassName}`}
+      className={`relative w-full h-full flex flex-col bg-white rounded-2xl shadow-sm border border-neutral-400 overflow-hidden transition-shadow duration-300 hover:shadow-md ${productClassName}`}
       style={{ fontFamily: "'Segoe UI', sans-serif" }}
     >
       {/* Badge */}
@@ -38,20 +39,24 @@ const ProductCard = ({
       <Link to={"/product-details"} className="w-full group">
         <div
           className="relative w-full flex items-center justify-center overflow-hidden"
-          style={{ height: "260px" }}
+          style={{ height: isSmall ? "140px" : "260px" }}
         >
           <img
             src={imgSrcFirst}
             alt={imgAlt}
-            className="object-contain w-auto h-[220px] transition-transform duration-500 group-hover:scale-105"
+            className={`object-contain w-auto transition-transform duration-500 group-hover:scale-105 ${isSmall ? "h-[100px]" : "h-[220px]"}`}
           />
         </div>
       </Link>
 
       {/* Info Area */}
-      <div className="px-4 pt-4 pb-5 flex flex-col gap-3  rounded-t-2xl border-t-1 border-neutral-300">
+      <div
+        className={`px-4 pb-5 flex flex-col flex-grow rounded-t-2xl border-t-1 border-neutral-300 ${isSmall ? "pt-2 gap-1.5" : "pt-4 gap-3"}`}
+      >
         {/* Title */}
-        <h3 className="text-[#1a1a1a text-xl font-semibold leading-snug text-center">
+        <h3
+          className={`text-[#1a1a1a] font-semibold leading-snug text-center ${isSmall ? "text-xs" : "text-xl"}`}
+        >
           {title}
         </h3>
 
@@ -59,23 +64,29 @@ const ProductCard = ({
         <div
           className={`flex justify-center items-baseline gap-1 ${priceClassName}`}
         >
-          <span className="text-[#1a1a1a] text-3xl font-extrabold">
+          <span
+            className={`text-[#1a1a1a] font-extrabold ${isSmall ? "text-lg" : "text-3xl"}`}
+          >
             {currency}
           </span>
-          <span className="text-[#1a1a1a] text-xl font-bold tracking-tight">
+          <span
+            className={`text-[#1a1a1a] font-bold tracking-tight ${isSmall ? "text-sm" : "text-xl"}`}
+          >
             {typeof price === "number" ? price.toLocaleString() : price}
           </span>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 mt-1">
+        <div className="flex items-center gap-2 mt-auto">
           <Link
             to={"/product-details"}
-            className="flex-1 flex items-center justify-center py-2.5 rounded-full border border-neutral-500 text-base font-medium text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all duration-250"
+            className={`flex-1 flex items-center justify-center rounded-full border border-neutral-500 font-medium text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all duration-250 ${isSmall ? "px-2 lg:px-5 py-1 lg:py-2  text-sm" : "text-sm lg:text-base px-2 lg:px-5 py-1.5 lg:py-2"}`}
           >
             Shop Now
           </Link>
-          <button className="w-10 h-10 flex items-center justify-center rounded-full border border-neutral-500 hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-all duration-250 text-[#1a1a1a] cursor-pointer">
+          <button
+            className={`flex items-center justify-center rounded-full border border-neutral-500 hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-all duration-250 text-[#1a1a1a] cursor-pointer ${isSmall ? "w-8 h-8" : " w-8 h-8 lg:w-10 lg:h-10"}`}
+          >
             <ShoppingCart size={16} />
           </button>
         </div>
