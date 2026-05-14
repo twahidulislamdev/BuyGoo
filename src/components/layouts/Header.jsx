@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import Container from "../Container";
 import Flex from "../Flex";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, Navigate, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import {
   FaRegUser,
@@ -10,14 +11,13 @@ import {
   FaTimes,
   FaChevronRight,
 } from "react-icons/fa";
-
 import { HiOutlineShoppingBag, HiMiniBars3CenterLeft } from "react-icons/hi2";
-import axios from "axios";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [categoryDropdown, setCategoryDropdown] = useState(false);
   const [categories, setCategories] = useState([]);
+  const Navigate = useNavigate();
 
   // ================= MENU ITEMS =================
   const menuItems = [
@@ -219,7 +219,11 @@ const Header = () => {
             {/* ================= ICONS ================= */}
             <div className="flex items-center gap-4">
               <FaRegHeart className="text-xl cursor-pointer" />
-              <FaRegUser className="text-xl cursor-pointer" />
+
+              <FaRegUser
+                className="text-xl cursor-pointer"
+                onClick={() => Navigate("/login")}
+              />
               <HiOutlineShoppingBag className="text-2xl cursor-pointer" />
             </div>
           </div>

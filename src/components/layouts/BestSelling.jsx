@@ -37,7 +37,7 @@ const BestSelling = () => {
     <div className="w-full m-auto mt-3 overflow-hidden">
       <Container>
         {/* Top Label */}
-        <div className="w-full flex space-x-2 px-2 lg:px-0 pb-3">
+        <div className="w-full flex justify-start items-center space-x-2 px-2 lg:px-0 pb-3">
           <div className="w-3 h-6 sm:w-4 sm:h-7 bg-mainColor rounded-sm"></div>
           <h6 className="text-sm sm:text-base text-mainColor font-semibold">
             This Month

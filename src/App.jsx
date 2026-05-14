@@ -8,6 +8,8 @@ import Contact from "./components/pages/Contact";
 import ProductDetails from "./components/pages/ProductDetails";
 import AddToCart from "./components/pages/AddToCart";
 import CheckOut from "./components/pages/CheckOut";
+import SignUp from "./components/pages/SignUp";
+import Login from "./components/pages/Login";
 
 function App() {
   return (
@@ -19,10 +21,12 @@ function App() {
             <Route path="shop" element={<Shop />} />
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
-            <Route path="product-details" element={<ProductDetails />} />
+            <Route path="productdetails" element={<ProductDetails />} />
             <Route path="addtocart" element={<AddToCart />} />
             <Route path="checkout" element={<CheckOut />} />
           </Route>
+          <Route path="signup" element={<SignUp />} />
+          <Route path="login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </>
