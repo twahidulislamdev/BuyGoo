@@ -16,8 +16,8 @@ const Home = () => {
       <Categories />
       <BestSelling />
       <LatestOffer />
-      <OurProducts />
       <TrendingProducts />
+      <OurProducts />
       <Policy />
     </>
   );

@@ -63,15 +63,15 @@ export default function ProductDetails() {
   const nextImage = () => setSelectedImage((p) => (p + 1) % images.length);
 
   return (
-    <div className="h-screen bg-white">
+    <div className="bg-white lg:h-screen pb-24 lg:pb-0">
       <Container>
         <div className="py-2 lg:py-5 px-3 lg:px-0 grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 items-start">
           {/* ═══════════════ LEFT — Gallery ═══════════════ */}
-          <div className="flex flex-col gap-3 lg:sticky lg:top-5">
+          <div className="flex flex-col gap-3">
             {/* Main Image */}
             <div
               className="relative overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm group"
-              style={{ height: "450px" }}
+              style={{ height: "480px" }}
             >
               <img
                 key={selectedImage}
@@ -131,7 +131,7 @@ export default function ProductDetails() {
                       ? "border-gray-900 shadow-md ring-2 ring-gray-900/10 scale-[0.97]"
                       : "border-gray-200 hover:border-gray-400 hover:shadow-sm"
                   }`}
-                  style={{ height: "90px" }}
+                  style={{ height: "100px" }}
                 >
                   <img
                     src={img.src}
@@ -147,7 +147,7 @@ export default function ProductDetails() {
           </div>
 
           {/* ═══════════════ RIGHT — Product Info ═══════════════ */}
-          <div className="flex flex-col overflow-hidden scroll-y-none">
+          <div className="flex flex-col">
             {/* Title */}
             <h1 className="text-xl lg:text-4xl font-bold text-neutral-900 leading-tight tracking-tight">
               Colorful Comfortable Jacket

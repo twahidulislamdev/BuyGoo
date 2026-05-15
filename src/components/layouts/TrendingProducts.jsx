@@ -1,12 +1,28 @@
-// import React, { useState } from "react";
-import { ShoppingCart, Heart } from "lucide-react";
-import { Link } from "react-router-dom";
 import ProductCard from "../ProductCard";
 import Container from "../Container";
+import axios from "axios";
+import { useState, useEffect } from "react";
 
 // ---------------------Tranding Product ---------------------
 
 const TrendingProducts = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const res = await axios.get(
+          "https://buygoo-backend.onrender.com/api/v1/product/getallproducts",
+        );
+        const data = res.data.products || res.data;
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
+
+    fetchProducts();
+  }, []);
   return (
     <div className="w-full  mt-5">
       <Container>
@@ -34,100 +50,80 @@ const TrendingProducts = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 mt-5">
             {/* LEFT - 2x2 Grid */}
             <div className="lg:col-span-4 grid grid-cols-2 gap-3">
-              <ProductCard
-                isSmall={true}
-                title="Nothing CMF Buds Pro"
-                price={4990}
-                oldPrice={8990}
-                discount="44%"
-                tag="Most Popular"
-                imgSrcFirst="https://i.ibb.co/jkL0r0q/earbuds.png"
-              />
-
-              <ProductCard
-                isSmall={true}
-                title="Apple 30W USB C Power Adapter 2 Pin"
-                price={4990}
-                oldPrice={8990}
-                discount="44%"
-                outOfStock
-                imgSrcFirst="https://i.ibb.co/3m8F0B6/adapter.png"
-              />
-
-              <ProductCard
-                isSmall={true}
-                title="Motorola Edge 50 Fusion 5G"
-                price={26999}
-                oldPrice={35990}
-                discount="24%"
-                tag="Hot Product"
-                imgSrcFirst="https://i.ibb.co/yq6tM9k/moto1.png"
-              />
-
-              <ProductCard
-                isSmall={true}
-                title="Motorola Edge 50 Pro 5G"
-                price={34990}
-                oldPrice={44490}
-                discount="21%"
-                tag="Hot Product"
-                imgSrcFirst="https://i.ibb.co/4W2DGKm/moto2.png"
-              />
+              {products.slice(0, 4).map((item, index) => (
+                <ProductCard
+                  key={`left-${index}`}
+                  isSmall={true}
+                  title={item.title || item.name}
+                  price={item.price}
+                  oldPrice={item.oldPrice}
+                  discount={
+                    item.discountPercentage
+                      ? `${Math.round(item.discountPercentage)}%`
+                      : item.discount
+                  }
+                  tag={
+                    index === 0
+                      ? "Most Popular"
+                      : index === 2
+                        ? "Hot Product"
+                        : undefined
+                  }
+                  outOfStock={item.stock === 0}
+                  imgSrcFirst={item.thumbnail || item.image || item.images?.[0]}
+                />
+              ))}
             </div>
 
             {/* CENTER - Large Featured Product */}
             <div className="lg:col-span-4">
-              <ProductCard
-                isLarge={true}
-                title="iPhone 17 Pro Max"
-                price={165990}
-                oldPrice={214990}
-                discount="22%"
-                tag="Hot Product"
-                imgSrcFirst="https://i.ibb.co/Gv0VYwL/iphone.png"
-              />
+              {products[5] && (
+                <ProductCard
+                  isLarge={true}
+                  title={products[5].title || products[5].name}
+                  price={products[5].price}
+                  oldPrice={products[5].oldPrice}
+                  discount={
+                    products[5].discountPercentage
+                      ? `${Math.round(products[5].discountPercentage)}%`
+                      : products[5].discount
+                  }
+                  tag="Hot Product"
+                  outOfStock={products[5].stock === 0}
+                  imgSrcFirst={
+                    products[5].thumbnail ||
+                    products[5].image ||
+                    products[5].images?.[0]
+                  }
+                />
+              )}
             </div>
 
             {/* RIGHT - 2x2 Grid */}
             <div className="lg:col-span-4 grid grid-cols-2 gap-4">
-              <ProductCard
-                isSmall={true}
-                title="Apple Watch SE 3"
-                price={34490}
-                oldPrice={46490}
-                discount="25%"
-                tag="Customers Choice"
-                imgSrcFirst="https://i.ibb.co/ZL3m5xM/watch1.png"
-              />
-
-              <ProductCard
-                isSmall={true}
-                title="Xiaomi Mibro Watch A2 Bluetooth Call Smart..."
-                price={2999}
-                oldPrice={4999}
-                discount="40%"
-                tag="Customers Choice"
-                imgSrcFirst="https://i.ibb.co/j8z6v3P/watch2.png"
-              />
-
-              <ProductCard
-                isSmall={true}
-                title="Kieslect Lady Smart Watch Pura"
-                price={3499}
-                oldPrice={7999}
-                discount="56%"
-                tag="Top Selling"
-                imgSrcFirst="https://i.ibb.co/R2Qn3Ty/watch3.png"
-              />
-
-              <ProductCard
-                isSmall={true}
-                title="iQOO Z9 5G"
-                price={21990}
-                oldPrice={30990}
-                discount="29%"
-                imgSrcFirst="https://i.ibb.co/1fN9QyK/iqoo.png"
-              />
+              {products.slice(6, 10).map((item, index) => (
+                <ProductCard
+                  key={`right-${index}`}
+                  isSmall={true}
+                  title={item.title || item.name}
+                  price={item.price}
+                  oldPrice={item.oldPrice}
+                  discount={
+                    item.discountPercentage
+                      ? `${Math.round(item.discountPercentage)}%`
+                      : item.discount
+                  }
+                  tag={
+                    index === 0 || index === 1
+                      ? "Customers Choice"
+                      : index === 2
+                        ? "Top Selling"
+                        : undefined
+                  }
+                  outOfStock={item.stock === 0}
+                  imgSrcFirst={item.thumbnail || item.image || item.images?.[0]}
+                />
+              ))}
             </div>
           </div>
         </div>
