@@ -1,25 +1,37 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Container from "../Container";
 import Flex from "../Flex";
-import { NavLink, Link, Navigate, useNavigate } from "react-router-dom";
-import axios from "axios";
-
 import {
   FaRegUser,
   FaRegHeart,
+  FaHome,
+  FaCar,
   FaBars,
-  FaTimes,
-  FaChevronRight,
+  FaCalendarCheck,
 } from "react-icons/fa";
-import { HiOutlineShoppingBag, HiMiniBars3CenterLeft } from "react-icons/hi2";
+import { HiOutlineShoppingBag } from "react-icons/hi2";
+import { Link } from "react-router-dom";
+import { BsCalendar2Check } from "react-icons/bs";
+import { BiSolidContact } from "react-icons/bi";
+import { ShoppingBagIcon } from "lucide-react";
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [categoryDropdown, setCategoryDropdown] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const Navigate = useNavigate();
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  // ================= MENU ITEMS =================
+  // Handle scroll detection
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const menuItems = [
     { name: "HOME", path: "/" },
     { name: "SHOP", path: "/shop" },
@@ -28,207 +40,122 @@ const Header = () => {
     { name: "PAGES", path: "/pages" },
   ];
 
-  // ================= PREVENT BODY SCROLL ==============
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-  }, [isMenuOpen]);
-
-  // ================= FETCH CATEGORIES =================
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/v1/category/getallcategory")
-      .then((res) => {
-        setCategories(res.data.categories || []);
-      })
-      .catch((err) => {
-        console.error("Error Fetching Categories:", err);
-      });
-  }, []);
-
   return (
     <>
-      {/* ================= DESKTOP HEADER ================= */}
-      <div className="hidden lg:block w-full py-3">
+      {/* Desktop Header part start Here */}
+      <div
+        className={`hidden lg:block sticky top-0 py-5 w-full z-[99] transition-all duration-300 ${
+          isScrolled
+            ? "bg-white backdrop-blur-md shadow-md transition-ease-in-out transition-all duration-200"
+            : "bg-white shadow-sm"
+        }`}
+      >
         <Container>
-          <Flex className="justify-between items-center">
-            <Link to="/">
-              <h3 className="text-2xl font-bold">
-                Buy<span className="text-mainColor">Goo</span>
-              </h3>
-            </Link>
+          <Flex className={"justify-between items-center"}>
+            <div className="text-2xl font-bold text-black">
+              <span className="text-mainColor tracking-[2px]">Buy</span>Goo
+            </div>
 
-            <ul className="flex items-center gap-x-10">
+            {/* Menu */}
+            <ul className="flex items-center gap-x-15 xl:gap-x-10">
               {menuItems.map((item, idx) => (
-                <li key={idx}>
-                  <NavLink
-                    to={item.path}
-                    end
-                    className={({ isActive }) =>
-                      `relative py-2 text-sm font-medium transition ${
-                        isActive ? "text-black" : "text-gray-600"
-                      }`
-                    }
-                  >
-                    {({ isActive }) => (
-                      <>
-                        {item.name}
-                        <span
-                          className={`absolute left-0 bottom-0 h-[2px] bg-black transition-all duration-300 ${
-                            isActive ? "w-full" : "w-0"
-                          }`}
-                        />
-                      </>
-                    )}
-                  </NavLink>
-                </li>
+                <Link to={item.path} key={idx}>
+                  <li className="relative list-none py-2 text-sm font-medium text-black group cursor-pointer transition-all ease-in-out">
+                    {item.name}
+                    <span className="absolute left-0 bottom-0 h-0.5 bg-mainColor w-0 group-hover:w-full transition-all duration-300"></span>
+                  </li>
+                </Link>
               ))}
             </ul>
+
+            {/* Icons + Search */}
+            <div className="flex items-center gap-x-3 lg:gap-x-5">
+              <div className="flex-1 mx-3 lg:mx-5 flex justify-center items-center">
+                <input
+                  className="w-[200px] lg:w-[250px] py-2 px-3 
+  rounded-md bg-black/5 backdrop-blur-md border border-black/20 
+  text-black text-sm placeholder:text-gray-500 
+  outline-none focus:border-black/40 transition-all duration-300"
+                  type="text"
+                  placeholder="What are you looking?"
+                />
+              </div>
+              <FaRegHeart className="text-black text-xl cursor-pointer hover:text-mainColor transition-colors" />
+              <HiOutlineShoppingBag className="text-black text-2xl cursor-pointer hover:text-mainColor transition-colors" />
+
+              <Link to="/login">
+                <FaRegUser className="text-black text-xl cursor-pointer hover:text-mainColor transition-colors" />
+              </Link>
+
+            </div>
           </Flex>
         </Container>
       </div>
+      {/* Desktop Header part End Here  */}
 
-      {/* ================= MOBILE HEADER ================= */}
-      <div className="w-full bg-white shadow-sm lg:hidden sticky top-0 z-40">
-        <Container>
-          <Flex className="justify-between items-center py-3 px-3">
-            <Link to="/">
-              <h3 className="text-lg font-semibold">
-                Buy<span className="text-mainColor">Goo</span>
-              </h3>
-            </Link>
-
-            <button onClick={() => setIsMenuOpen(true)} className="p-2">
-              <FaBars className="text-2xl" />
-            </button>
-          </Flex>
-          <div
-            onClick={() => setIsMenuOpen(false)}
-            className={`fixed inset-0 bg-black/40 z-50 transition ${
-              isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-            }`}
-          />
-
-          <aside
-            className={`fixed top-0 left-0 w-full h-screen bg-white z-50 transition-transform duration-300 ${
-              isMenuOpen ? "translate-y-0" : "-translate-y-full"
-            }`}
-          >
-            <div className="flex justify-between items-center px-5 py-5 border-b">
-              <h3 className="text-lg font-semibold">Navigation</h3>
-              <button onClick={() => setIsMenuOpen(false)}>
-                <FaTimes className="text-2xl" />
-              </button>
-            </div>
-
-            <nav className="px-5 py-5">
-              <ul className="space-y-2">
-                {menuItems.map((item, idx) => (
-                  <li key={idx}>
-                    <NavLink
-                      to={item.path}
-                      end
-                      onClick={() => setIsMenuOpen(false)}
-                      className={({ isActive }) =>
-                        `flex items-center justify-between px-4 py-3 rounded-xl transition ${
-                          isActive ? "bg-gray-100 text-black" : "text-gray-600"
-                        }`
-                      }
-                    >
-                      {({ isActive }) => (
-                        <>
-                          <span className="text-sm font-medium">
-                            {item.name}
-                          </span>
-                          {isActive && <span className="text-black">→</span>}
-                        </>
-                      )}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </aside>
-        </Container>
-      </div>
-
-      {/* ================= LOWER HEADER ================= */}
-      <div className="w-full flex justify-center bg-[#F5F5F3] px-3 py-3 shadow-sm">
-        <Container>
-          <div className="flex justify-between items-center">
-            {/* ================= CATEGORY ================= */}
-            <div className="relative">
-              <HiMiniBars3CenterLeft
-                className="text-2xl cursor-pointer"
-                onClick={() => setCategoryDropdown((prev) => !prev)}
-              />
-
-              {categoryDropdown && (
-                <>
-                  {/* BACKDROP */}
-                  <div
-                    className="fixed inset-0 z-40"
-                    onClick={() => setCategoryDropdown(false)}
-                  />
-
-                  {/* DROPDOWN */}
-                  <div className="absolute left-0 top-12 z-50 w-72 bg-white shadow-2xl border border-gray-100 overflow-hidden rounded-md">
-                    {/* HEADER */}
-                    <div className="px-5 py-3 bg-gray-50 border-b border-gray-100">
-                      <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                        Browse Categories
-                      </p>
-                    </div>
-
-                    {/* CATEGORY LIST */}
-                    <div className="max-h-[400px] overflow-y-auto">
-                      {categories.map((item) => (
-                        <li
-                          key={item._id}
-                          onClick={() => setCategoryDropdown(false)}
-                          className="w-full flex items-center justify-between px-5 py-5 text-sm font-medium text-gray-700 hover:bg-neutral-100 hover:text-black group transition-all duration-150 border-b border-neutral-200 cursor-pointer"
-                        >
-                          <span>{item.name}</span>
-                          <FaChevronRight className="text-xs text-gray-300 group-hover:text-gray-600 group-hover:translate-x-1 transition-all duration-150" />
-                        </li>
-                      ))}
-
-                      {categories.length === 0 && (
-                        <div className="px-5 py-8 text-center text-sm text-gray-500">
-                          No Categories Found
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* ================= SEARCH ================= */}
-            <div className="flex-1 mx-3 flex justify-center">
-              <input
-                type="text"
-                placeholder="What are you looking for?"
-                className="w-[200px] lg:w-[500px] py-1 lg:py-1.5 px-3 text-sm lg:text-base border rounded-md bg-[#F5F5F5] outline-none"
-              />
-            </div>
-
-            {/* ================= ICONS ================= */}
-            <div className="flex items-center gap-4">
-              <FaRegHeart className="text-xl cursor-pointer" />
-
-              <FaRegUser
-                className="text-xl cursor-pointer"
-                onClick={() => Navigate("/login")}
-              />
-              <HiOutlineShoppingBag className="text-2xl cursor-pointer" />
-            </div>
+      {/* Mobile Header part start Here */}
+      <div
+        className={`px-3 block lg:hidden sticky top-0 py-5 w-full z-[99] transition-all duration-300 ${
+          isScrolled
+            ? "bg-white backdrop-blur-md shadow-md transition-ease-in-out transition-all duration-200"
+            : "bg-white shadow-sm"
+        }`}
+      >
+        <Flex className={"justify-between items-center"}>
+          <div className="text-xl font-bold text-black">
+            <span className="text-mainColor tracking-[2px]">Buy</span>Goo
           </div>
-        </Container>
+          {/* Icons + Search */}
+          <div className="flex items-center gap-x-3 lg:gap-x-5">
+            <div className="flex-1 mx-3 lg:mx-5 flex justify-center items-center">
+              <input
+                className="w-[165px] lg:w-[250px] py-2 px-3 rounded-md bg-black/5 border border-black/20 outline-none focus:border-black/40 text-black text-sm placeholder:text-gray-500"
+                type="text"
+                placeholder="What are you looking?"
+              />
+            </div>
+            <FaRegHeart className="text-black text-xl cursor-pointer" />
+            <HiOutlineShoppingBag className="text-black text-2xl cursor-pointer" />
+            <FaRegUser className="text-black text-xl cursor-pointer" />
+          </div>
+        </Flex>
       </div>
+      {/* Mobile Header part End Here */}
+
+      {/* Mobile Footer Nav start Here */}
+      <div className="py-4 flex justify-between items-center lg:hidden w-full fixed bottom-0 left-0 z-[99] bg-white border-t border-gray-100 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] ">
+        <Link to="/" className="flex-1">
+          <div className="flex flex-col justify-center items-center">
+            <FaHome className="text-mainColor text-2xl  pb-1.5 cursor-pointer" />
+            <p className="text-sm text-mainColor">HOME</p>
+          </div>
+        </Link>
+        <Link to="/shop" className="flex-1">
+          <div className="flex flex-col justify-center items-center">
+            <HiOutlineShoppingBag className="text-mainColor text-2xl  pb-1.5 cursor-pointer" />
+            <p className="text-sm text-mainColor">SHOP</p>
+          </div>
+        </Link>
+        <Link to="/about" className="flex-1">
+          <div className="flex flex-col justify-center items-center">
+            <FaCalendarCheck className="text-mainColor text-2xl  pb-1.5 cursor-pointer" />
+            <p className="text-sm text-mainColor">ABOUT</p>
+          </div>
+        </Link>
+        <Link to="/contact" className="flex-1">
+          <div className="flex flex-col justify-center items-center">
+            <BiSolidContact className="text-mainColor text-2xl  pb-1.5 cursor-pointer" />
+            <p className="text-sm text-mainColor">CONTACT</p>
+          </div>
+        </Link>
+        <Link to="/pages" className="flex-1">
+          <div className="flex flex-col justify-center items-center">
+            <FaBars className="text-mainColor text-2xl  pb-1.5 cursor-pointer" />
+            <p className="text-sm text-mainColor">PAGES</p>
+          </div>
+        </Link>
+      </div>
+      {/* Mobile Footer Nav End Here */}
     </>
   );
 };

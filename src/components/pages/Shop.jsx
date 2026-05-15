@@ -13,7 +13,7 @@ const Shop = () => {
     async function allDatas() {
       try {
         const res = await axios.get(
-          "http://localhost:3000/api/v1/product/getallproducts",
+          "https://buygoo-backend.onrender.com/api/v1/product/getallproducts",
         );
         const data = res.data.products || res.data;
         setMyProduct(data);
