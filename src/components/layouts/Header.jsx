@@ -1,22 +1,47 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Container from "../Container";
 import Flex from "../Flex";
 import {
   FaRegUser,
   FaRegHeart,
   FaHome,
-  FaCar,
   FaBars,
   FaCalendarCheck,
 } from "react-icons/fa";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { Link } from "react-router-dom";
-import { BsCalendar2Check } from "react-icons/bs";
 import { BiSolidContact } from "react-icons/bi";
-import { ShoppingBagIcon } from "lucide-react";
+import CartSidebar from "./CartSidebar";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+
+  // Demo cart state — replace with your real cart context/store
+  const [cartItems, setCartItems] = useState([
+    {
+      id: 1,
+      name: "Zessi Dresses",
+      variant: "Black / XL",
+      price: 49.0,
+      qty: 1,
+      image:
+        "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&q=80",
+    },
+  ]);
+
+  const handleUpdateQty = (id, newQty) => {
+    if (newQty < 1) return;
+    setCartItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, qty: newQty } : item)),
+    );
+  };
+
+  const handleRemove = (id) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const totalItems = cartItems.reduce((s, i) => s + i.qty, 0);
 
   // Handle scroll detection
   useEffect(() => {
@@ -42,7 +67,16 @@ const Header = () => {
 
   return (
     <>
-      {/* Desktop Header part start Here */}
+      {/* Cart Sidebar */}
+      <CartSidebar
+        isOpen={cartOpen}
+        onClose={() => setCartOpen(false)}
+        cartItems={cartItems}
+        onUpdateQty={handleUpdateQty}
+        onRemove={handleRemove}
+      />
+
+      {/*======== Desktop Header part start Here ========*/}
       <div
         className={`hidden lg:block sticky top-0 py-5 w-full z-[99] transition-all duration-300 ${
           isScrolled
@@ -81,7 +115,19 @@ const Header = () => {
                 />
               </div>
               <FaRegHeart className="text-black text-xl cursor-pointer hover:text-mainColor transition-colors" />
-              <HiOutlineShoppingBag className="text-black text-2xl cursor-pointer hover:text-mainColor transition-colors" />
+
+              {/* Cart icon with badge */}
+              <button
+                onClick={() => setCartOpen(true)}
+                className="relative cursor-pointer text-black hover:text-mainColor transition-colors"
+              >
+                <HiOutlineShoppingBag className="text-2xl" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 w-4 h-4 bg-mainColor text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
 
               <Link to="/login">
                 <FaRegUser className="text-black text-xl cursor-pointer hover:text-mainColor transition-colors" />
@@ -90,9 +136,9 @@ const Header = () => {
           </Flex>
         </Container>
       </div>
-      {/* Desktop Header part End Here  */}
+      {/*=========  Desktop Header part End Here =========*/}
 
-      {/* Mobile Header part start Here */}
+      {/*========= Mobile Header part start Here =========*/}
       <div
         className={`px-3 block lg:hidden sticky top-0 py-5 w-full z-[99] transition-all duration-300 ${
           isScrolled
@@ -114,16 +160,29 @@ const Header = () => {
               />
             </div>
             <FaRegHeart className="text-black text-xl cursor-pointer" />
-            <HiOutlineShoppingBag className="text-black text-2xl cursor-pointer" />
+
+            {/* Mobile Cart icon with badge */}
+            <button
+              onClick={() => setCartOpen(true)}
+              className="relative cursor-pointer"
+            >
+              <HiOutlineShoppingBag className="text-black text-2xl" />
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 w-4 h-4 bg-mainColor text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">
+                  {totalItems}
+                </span>
+              )}
+            </button>
+
             <Link to={"/login"}>
               <FaRegUser className="text-black text-xl cursor-pointer" />
             </Link>
           </div>
         </Flex>
       </div>
-      {/* Mobile Header part End Here */}
+      {/*========= Mobile Header part End Here =========*/}
 
-      {/* Mobile Footer Nav start Here */}
+      {/*========= Mobile Footer Nav start Here =========*/}
       <div className="py-4 flex justify-between items-center lg:hidden w-full fixed bottom-0 left-0 z-[99] bg-white border-t border-gray-100 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] ">
         <Link to="/" className="flex-1">
           <div className="flex flex-col justify-center items-center">
@@ -156,7 +215,7 @@ const Header = () => {
           </div>
         </Link>
       </div>
-      {/* Mobile Footer Nav End Here */}
+      {/*========= Mobile Footer Nav End Here =========*/}
     </>
   );
 };

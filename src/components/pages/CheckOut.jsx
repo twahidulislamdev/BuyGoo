@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Container from "../Container";
+import { CreditCard, Landmark, Banknote, Wallet } from "lucide-react";
 
 const products = [
   {
@@ -30,21 +31,25 @@ const paymentOptions = [
     id: "bank",
     label: "Direct bank transfer",
     desc: "Use your Order ID as payment reference. Order ships after funds clear.",
+    icon: Landmark,
   },
   {
     id: "check",
     label: "Check payments",
     desc: "Send a check to our mailing address. Allow 5–7 days for processing.",
+    icon: Wallet,
   },
   {
     id: "cod",
     label: "Cash on delivery",
     desc: "Pay with cash when your order arrives at your door.",
+    icon: Banknote,
   },
   {
     id: "paypal",
     label: "PayPal",
     desc: "You will be redirected to PayPal to complete your payment securely.",
+    icon: CreditCard,
   },
 ];
 
@@ -57,7 +62,7 @@ const CheckOut = () => {
   const total = subtotal + vat;
 
   return (
-    <div className="py-10 px-4">
+    <div className="px-3">
       <Container>
         {/* Page Header */}
         <h1
@@ -72,7 +77,7 @@ const CheckOut = () => {
 
         <div className="flex flex-wrap gap-6 items-start justify-center">
           {/* ── LEFT: Billing Form ── */}
-          <div className="flex-1 w-[50%]">
+          <div className="flex-1 w-[50%] border border-neutral-300 rounded-xl p-5">
             <h2
               className="text-[17px] font-medium mb-5"
               style={{ fontFamily: "'Playfair Display', serif" }}
@@ -136,27 +141,27 @@ const CheckOut = () => {
             </label>
           </div>
 
-          {/* ── RIGHT PANEL ── */}
+          {/* ── RIGHT PANEL (improved) ── */}
           <div className="w-full lg:w-[40%] flex flex-col gap-4">
-            {/* Order Summary */}
-            <div className="bg-white rounded-[20px] border border-[#e8e6e0] p-6">
-              <h2
-                className="text-[17px] font-medium mb-5"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
-                Your Order
-              </h2>
+
+            {/* Order Summary Card */}
+            <div className="bg-white rounded-2xl border border-[#e8e6e0] overflow-hidden">
+              {/* Card header */}
+              <div className="px-5 py-4 border-b border-[#f0ede5]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400">
+                  Your Order
+                </p>
+              </div>
 
               {/* Product rows */}
-              <div className="flex flex-col gap-3 mb-4">
+              <div className="px-5 py-4 flex flex-col gap-3">
                 {products.map((p) => (
                   <div key={p.id} className="flex items-center gap-3">
-                    {/* Image / icon */}
-                    <div className="flex items-center justify-center text-2xl flex-shrink-0">
+                    <div className="w-[52px] h-[56px] rounded-xl overflow-hidden bg-gray-50 flex-shrink-0 border border-[#f0ede5]">
                       <img
                         src={p.image}
                         alt={p.name}
-                        className="w-[50px] h-[50px] object-cover rounded-[10px]"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -168,68 +173,105 @@ const CheckOut = () => {
                       </p>
                     </div>
                     <p className="text-[13px] font-semibold text-gray-900 whitespace-nowrap">
-                      ${p.price}
+                      ${p.price}.00
                     </p>
                   </div>
                 ))}
               </div>
 
-              <div className="h-px bg-[#f0ede5] my-3" />
-
-              <div className="space-y-2">
-                <SummaryRow label="Subtotal" value={`$${subtotal}`} />
-                <SummaryRow label="Shipping" value="Free" valueGreen />
-                <SummaryRow label="VAT" value={`$${vat}`} />
-                <div className="h-px bg-[#f0ede5]" />
-                <SummaryRow label="Total" value={`$${total}`} bold />
+              {/* Pricing rows */}
+              <div className="px-5 pb-5">
+                <div className="h-px bg-[#f0ede5] mb-3" />
+                <div className="flex flex-col gap-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[13px] text-gray-500">Subtotal</span>
+                    <span className="text-[13px] text-gray-800">${subtotal}.00</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[13px] text-gray-500">Shipping</span>
+                    <span className="text-[13px] font-medium text-emerald-500">Free</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[13px] text-gray-500">VAT</span>
+                    <span className="text-[13px] text-gray-800">${vat}.00</span>
+                  </div>
+                  <div className="h-px bg-[#f0ede5] my-1" />
+                  <div className="flex justify-between items-center">
+                    <span className="text-[15px] font-semibold text-gray-900">Total</span>
+                    <span className="text-[17px] font-semibold text-gray-900">${total}.00</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Payment */}
-            <div className="bg-white rounded-[20px] border border-[#e8e6e0] p-6">
-              <h2
-                className="text-[17px] font-medium mb-4"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
-                Payment Method
-              </h2>
-              <div className="flex flex-col gap-2">
-                {paymentOptions.map((opt) => (
-                  <label
-                    key={opt.id}
-                    onClick={() => setPayment(opt.id)}
-                    className={`flex items-start gap-3 p-3 rounded-xl border-[1.5px] cursor-pointer transition-all ${
-                      payment === opt.id
-                        ? "border-gray-900 bg-gray-50"
-                        : "border-[#e8e6e0] hover:border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="payment"
-                      checked={payment === opt.id}
-                      onChange={() => setPayment(opt.id)}
-                      className="mt-0.5 accent-black cursor-pointer flex-shrink-0"
-                    />
-                    <div>
-                      <p className="text-[13px] font-medium text-gray-900">
-                        {opt.label}
-                      </p>
-                      <p className="text-[11px] text-gray-400 mt-1 leading-relaxed">
-                        {opt.desc}
-                      </p>
-                    </div>
-                  </label>
-                ))}
+            {/* Payment Method Card */}
+            <div className="bg-white rounded-2xl border border-[#e8e6e0] overflow-hidden">
+              <div className="px-5 py-4 border-b border-[#f0ede5]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400">
+                  Payment Method
+                </p>
+              </div>
+
+              <div className="px-4 py-3 flex flex-col gap-2">
+                {paymentOptions.map((opt) => {
+                  const Icon = opt.icon;
+                  const isActive = payment === opt.id;
+                  return (
+                    <label
+                      key={opt.id}
+                      onClick={() => setPayment(opt.id)}
+                      className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all duration-150 ${
+                        isActive
+                          ? "border-gray-900 bg-gray-50"
+                          : "border-[#e8e6e0] hover:border-gray-300 hover:bg-gray-50/60"
+                      }`}
+                    >
+                      {/* Icon tile */}
+                      <div
+                        className={`w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0 transition-colors ${
+                          isActive ? "bg-gray-900" : "bg-gray-100"
+                        }`}
+                      >
+                        <Icon
+                          size={17}
+                          className={isActive ? "text-white" : "text-gray-500"}
+                        />
+                      </div>
+
+                      {/* Text */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-medium text-gray-900 leading-tight">
+                          {opt.label}
+                        </p>
+                        <p className="text-[11px] text-gray-400 mt-0.5 leading-relaxed truncate">
+                          {opt.desc}
+                        </p>
+                      </div>
+
+                      {/* Custom radio dot */}
+                      <div
+                        className={`w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                          isActive
+                            ? "border-gray-900"
+                            : "border-gray-300"
+                        }`}
+                      >
+                        {isActive && (
+                          <div className="w-2 h-2 rounded-full bg-gray-900" />
+                        )}
+                      </div>
+                    </label>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Place Order */}
+            {/* Place Order Button */}
             <button
               type="button"
-              className="w-full bg-[#111] hover:bg-[#222] active:scale-[0.99] text-white text-[13px] font-semibold uppercase tracking-wider py-4 rounded-[14px] transition-all"
+              className="w-full bg-[#111] hover:bg-[#2a2a2a] active:scale-[0.99] text-white text-[13px] font-semibold uppercase tracking-wider py-4 rounded-[14px] transition-all duration-150"
             >
-              Place Order →
+              Place Order 
             </button>
 
             <p className="text-[11px] text-gray-400 text-center leading-relaxed">
@@ -240,13 +282,14 @@ const CheckOut = () => {
               .
             </p>
           </div>
+          {/* ── END RIGHT PANEL ── */}
         </div>
       </Container>
     </div>
   );
 };
 
-/* ── Helper components ── */
+/* ── Helper components (unchanged) ── */
 
 const Field = ({ label, required, optional, children }) => (
   <div className="mb-4 flex-1">

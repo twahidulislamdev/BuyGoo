@@ -311,12 +311,15 @@ export default function ShoppingCart() {
               </div>
 
               {/* ── Checkout Button ── */}
-              <button className="w-full bg-black text-white text-lg font-semibold py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 hover:bg-neutral-800 cursor-pointer active:scale-[0.99] shadow-sm">
+              <Link
+                to="/checkout"
+                className="w-full bg-black text-white text-lg font-semibold py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 hover:bg-neutral-800 cursor-pointer active:scale-[0.99] shadow-sm"
+              >
                 <span>Proceed to checkout</span>
                 <span className="text-xl">
                   <ArrowRight />
                 </span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>

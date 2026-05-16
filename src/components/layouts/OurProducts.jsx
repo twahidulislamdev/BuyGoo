@@ -26,7 +26,7 @@ const OurProducts = () => {
   }, []);
 
   return (
-    <div className="w-full m-auto lg:px-0 mt-5 overflow-hidden">
+    <div className="w-full m-auto lg:px-0 mt-3 overflow-hidden">
       <Container>
         {/* Top Label */}
         <div className="w-full flex space-x-2 pb-3 px-2 lg:px-0">

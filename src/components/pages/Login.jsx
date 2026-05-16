@@ -16,12 +16,12 @@ const Login = () => {
   return (
     <div>
       <Container>
-        <div className="flex items-center justify-center font-sans overflow-hidden overflow-y-auto">
+        <div className="flex items-center justify-center font-sans overflow-hidden">
           {/* Card Wrapper */}
           <div className="w-full h-screen grid grid-cols-1 lg:grid-cols-2 rounded-2xl overflow-hidden shadow-2xl">
             {/* ── LEFT PANEL ── */}
             <div
-              className="relative flex-col justify-between px-10 py-0 lg:py-6 my-0 lg:my-5 overflow-hidden hidden lg:flex rounded-2xl border border-white/10"
+              className="relative flex-col justify-between px-0 lg:px-10 py-0 lg:py-5 my-0 lg:my-5 overflow-hidden hidden lg:flex rounded-2xl border border-white/10"
               style={{ background: "#0d0d0d" }}
             >
               {/* Grid texture overlay */}
@@ -138,9 +138,18 @@ const Login = () => {
             </div>
 
             {/* ── RIGHT PANEL ── */}
-            <div className="bg-white flex flex-col justify-center px-10 py-0 lg:py-6 my-0 lg:my-5 rounded-2xl border border-gray-200 overflow-hidden">
+            <div className="bg-white flex flex-col justify-center px-10 py-0 lg:py-6 my-0 lg:my-5 rounded-2xl border border-gray-200">
+              {/* Back to Home (Mobile Only) */}
+              <button
+                onClick={() => navigate("/")}
+                className="flex lg:hidden items-center gap-2 text-sm text-gray-600 font-medium border border-gray-200 hover:bg-gray-50 transition-all duration-200 px-3 py-2 rounded-lg w-fit cursor-pointer mb-8"
+              >
+                <IoArrowBack className="text-sm" />
+                Back to home
+              </button>
+
               {/* Header */}
-              <div className="mb-8">
+              <div className="mb-10">
                 <h2
                   className="text-[26px] font-normal text-[#0d0d0d] mb-1.5"
                   style={{ fontFamily: "'Georgia', serif" }}
