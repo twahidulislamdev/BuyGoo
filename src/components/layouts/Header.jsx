@@ -86,7 +86,6 @@ const Header = () => {
               <Link to="/login">
                 <FaRegUser className="text-black text-xl cursor-pointer hover:text-mainColor transition-colors" />
               </Link>
-
             </div>
           </Flex>
         </Container>
@@ -116,7 +115,9 @@ const Header = () => {
             </div>
             <FaRegHeart className="text-black text-xl cursor-pointer" />
             <HiOutlineShoppingBag className="text-black text-2xl cursor-pointer" />
-            <FaRegUser className="text-black text-xl cursor-pointer" />
+            <Link to={"/login"}>
+              <FaRegUser className="text-black text-xl cursor-pointer" />
+            </Link>
           </div>
         </Flex>
       </div>

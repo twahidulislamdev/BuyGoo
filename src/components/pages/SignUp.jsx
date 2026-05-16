@@ -42,7 +42,7 @@ const SignUp = () => {
   return (
     <div>
       <Container>
-        <div className="flex items-center justify-center font-sans overflow-hidden">
+        <div className="flex items-center justify-center font-sans overflow-hidden overflow-y-scroll">
           {/* Card Wrapper */}
           <div className="w-full h-screen grid grid-cols-1 lg:grid-cols-2 rounded-2xl overflow-hidden shadow-2xl">
             {/* ── LEFT PANEL ── */}
