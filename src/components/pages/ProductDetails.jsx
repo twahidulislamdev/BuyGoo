@@ -24,37 +24,21 @@ const images = [
   },
 ];
 
-const sizes = ["XS", "S", "M", "L", "XL"];
-
 const colorOptions = [
   { name: "Midnight Black", hex: "#1a1a1a" },
   { name: "Slate Gray", hex: "#6b7280" },
   { name: "Crimson Red", hex: "#dc2626" },
+  { name: "Slate Gray", hex: "#6b7280" },
 ];
+
+const storageOptions = ["8/128GB", "8/256GB", "12/256GB", "12/512GB", "12/1TB"];
 
 export default function ProductDetails() {
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(0);
+  const [selectedStorage, setSelectedStorage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [sizeError, setSizeError] = useState(false);
   const [wishlistAdded, setWishlistAdded] = useState(false);
-  const [cartAdded, setCartAdded] = useState(false);
-
-  const handleAddToCart = () => {
-    if (!selectedSize) {
-      setSizeError(true);
-      return;
-    }
-    setSizeError(false);
-    setCartAdded(true);
-    setTimeout(() => setCartAdded(false), 2000);
-  };
-
-  const handleSizeSelect = (size) => {
-    setSelectedSize(size);
-    setSizeError(false);
-  };
 
   const handleWishlist = () => setWishlistAdded((prev) => !prev);
 
@@ -65,7 +49,7 @@ export default function ProductDetails() {
   return (
     <div className="bg-white lg:h-screen pb-24 lg:pb-0">
       <Container>
-        <div className="py-2 lg:py-5 px-3 lg:px-0 grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 items-start">
+        <div className="py-2 lg:py-5 px-3 lg:px-0 grid grid-cols-1 lg:grid-cols-[45fr_55fr] gap-5 lg:gap-5 items-start">
           {/* ═══════════════ LEFT — Gallery ═══════════════ */}
           <div className="flex flex-col gap-3">
             {/* Main Image */}
@@ -147,121 +131,199 @@ export default function ProductDetails() {
           </div>
 
           {/* ═══════════════ RIGHT — Product Info ═══════════════ */}
-          <div className="flex flex-col">
-            {/* Title */}
-            <h1 className="text-xl lg:text-4xl font-bold text-neutral-900 leading-tight tracking-tight">
-              Colorful Comfortable Jacket
-            </h1>
-            <div className="flex items-end gap-3 mt-3">
-              <span className="text-lg lg:text-xl font-semibold text-neutral-800">
-                $29.00
-              </span>
-              <span className="text-sm md:text-base lg:text-lg text-neutral-500 line-through font-medium mb-0.5">
-                $49.00
-              </span>
-              <span className="mb-1 bg-rose-100 text-rose-600 text-xs font-bold px-2.5 py-0.5 rounded-full tracking-wide">
-                −41%
-              </span>
-            </div>
-
-            {/* Stars + Reviews */}
-            <div className="flex items-center gap-3 mt-3">
-              <div className="flex gap-0.5">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <svg
-                    key={s}
-                    className="w-4 h-4 text-amber-400 fill-amber-400"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
+          <div className="flex flex-col bg-neutral-100 p-3 rounded-xl border border-neutral-300">
+            <div className="flex justify-between items-start">
+              {/* Title */}
+              <div className="">
+                <h1 className="text-lg lg:text-2xl font-semibold ">
+                  Colorful Comfortable Jacket
+                </h1>
+                <p className="text-sm text-neutral-600 px-1 pt-2">
+                  China   || 8/128GB   || Purple{" "}
+                  <span className="text-red-500">(OFFICIAL WARRANTY)</span>
+                </p>
               </div>
-              <span className="text-sm font-semibold text-gray-800">4.8</span>
-              <span className="text-sm text-gray-400">·</span>
-              <span className="text-sm text-gray-500 hover:text-indigo-600 cursor-pointer transition-colors underline underline-offset-2">
-                8,234 reviews
-              </span>
+              {/* price */}
+              <div className="flex flex-col items-end">
+                <span className="text-sm lg:text-lg font-semibold text-amber-600">
+                  BDT {12999}
+                </span>
+                <span className="text-xs lg:text-sm text-neutral-500 line-through font-medium">
+                  BDT {1999}
+                </span>
+              </div>
             </div>
-
-            {/* Price row */}
-
-            {/* Description */}
-            <p className="text-gray-500 text-sm leading-relaxed mt-3">
-              Premium quality hoodie crafted with ultra-soft fleece fabric for
-              all-day comfort. Features a relaxed silhouette, reinforced seams,
-              and a durable water-resistant finish that keeps you stylish
-              through any season.
-            </p>
+            {/* Short Description */}
+            <div className="mt-3 p-3 rounded-xl border border-neutral-300 bg-white/50">
+              <span className="text-sm font-semibold uppercase tracking-widest text-gray-500 block mb-3">
+                Key Specifications
+              </span>
+              <ul className="space-y-3 text-sm text-gray-600">
+                <li className="flex items-start gap-3">
+                  <svg
+                    className="w-5 h-5 text-gray-500 shrink-0 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.5"
+                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <span>
+                    <strong className="font-medium text-gray-800">
+                      Display:
+                    </strong>{" "}
+                    6.83″ AMOLED, 120Hz, HDR10+, Dolby Vision, Xiaomi Dragon
+                    Crystal Glass
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg
+                    className="w-5 h-5 text-gray-500 shrink-0 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.5"
+                      d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                    />
+                  </svg>
+                  <span>
+                    <strong className="font-medium text-gray-800">
+                      Performance:
+                    </strong>{" "}
+                    Dimensity 7400 Ultra, up to 12GB RAM, UFS 2.2
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg
+                    className="w-5 h-5 text-gray-500 shrink-0 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.5"
+                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.5"
+                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                  <span>
+                    <strong className="font-medium text-gray-800">
+                      Cameras:
+                    </strong>{" "}
+                    50MP OIS main + 8MP ultrawide, 20MP selfie, 4K video
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg
+                    className="w-5 h-5 text-gray-500 shrink-0 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.5"
+                      d="M4 7h14a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V9a2 2 0 012-2z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.5"
+                      d="M22 11v2"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.5"
+                      d="M6 10v4"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.5"
+                      d="M10 10v4"
+                    />
+                  </svg>
+                  <span>
+                    <strong className="font-medium text-gray-800">
+                      Battery:
+                    </strong>{" "}
+                    7000mAh, 45W wired, 22.5W reverse wired
+                  </span>
+                </li>
+              </ul>
+            </div>
 
             {/* Color Selector */}
-            <div className="mb-3 mt-5">
-              <span className="text-base font-semibold uppercase tracking-widest text-gray-500 block mb-3">
+            <div>
+              <span className="mt-3 px-3 text-base font-semibold uppercase tracking-widest text-gray-500 block mb-3">
                 Color —{" "}
                 <span className="text-gray-800 normal-case font-medium tracking-normal">
                   {colorOptions[selectedColor].name}
                 </span>
               </span>
-              <div className="flex gap-3">
+              <div className="flex gap-5.5 px-5">
                 {colorOptions.map((c, i) => (
                   <button
                     key={c.name}
                     onClick={() => setSelectedColor(i)}
                     title={c.name}
-                    className={`w-8 h-8 rounded-full border-2 transition-all duration-200 focus:outline-none ${
+                    className={`w-9 h-9 rounded-lg transition-all duration-300 focus:outline-none relative flex items-center justify-center ${
                       selectedColor === i
-                        ? "border-gray-900 scale-110 shadow-md"
-                        : "border-transparent hover:border-gray-300 hover:scale-105"
+                        ? "ring-2 ring-offset-2 ring-gray-900 scale-110 shadow-lg"
+                        : "ring-1 ring-gray-200 ring-offset-1 hover:ring-gray-400 hover:scale-105"
                     }`}
                     style={{ backgroundColor: c.hex }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Size Selector */}
-            <div className="mt-3 mb-5">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-base font-semibold uppercase tracking-widest text-gray-500">
-                  Select Size
-                </span>
-                <button className="text-xs text-indigo-500 underline underline-offset-2 hover:text-indigo-700 transition-colors font-medium">
-                  Size Guide ↗
-                </button>
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                {sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => handleSizeSelect(size)}
-                    className={`w-12 h-12 rounded-xl border text-sm font-semibold transition-all duration-150 focus:outline-none ${
-                      selectedSize === size
-                        ? "bg-black text-white border-black shadow-md"
-                        : "bg-transparent text-gray-700 border-gray-300 hover:border-gray-600"
-                    }`}
                   >
-                    {size}
+                    {selectedColor === i && (
+                      <span className="w-3.5 h-3.5 rounded-full bg-white/40 shadow-sm backdrop-blur-sm" />
+                    )}
                   </button>
                 ))}
               </div>
-              {sizeError && (
-                <p className="text-rose-500 text-xs mt-2.5 font-medium flex items-center gap-1">
-                  <svg
-                    className="w-3.5 h-3.5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Please select a size to continue
-                </p>
-              )}
             </div>
 
+            {/* Storage Selector */}
+            <div>
+              <span className="mt-5 px-3 text-base font-semibold uppercase tracking-widest text-gray-500 block mb-3">
+                Storage —{" "}
+                <span className="text-gray-800 normal-case font-medium tracking-normal">
+                  {storageOptions[selectedStorage]}
+                </span>
+              </span>
+              <div className="flex flex-wrap gap-3 px-3 mb-3">
+                {storageOptions.map((s, i) => (
+                  <button
+                    key={s}
+                    onClick={() => setSelectedStorage(i)}
+                    className={`px-4 h-10 rounded-lg border-2 text-sm font-semibold transition-all duration-300 focus:outline-none flex items-center justify-center ${
+                      selectedStorage === i
+                        ? "border-gray-900 bg-gray-900 text-white shadow-lg scale-105"
+                        : "border-gray-200 text-gray-600 hover:border-gray-400 hover:shadow-sm hover:scale-105 bg-white"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
             {/* Quantity + Add to Cart */}
             <div className="flex gap-3 items-stretch">
               {/* Quantity */}
@@ -285,47 +347,22 @@ export default function ProductDetails() {
 
               {/* Add to Cart */}
               <button
-                onClick={handleAddToCart}
-                className={`flex-1 flex items-center justify-center bg-white gap-2 py-3.5 px-6 rounded-xl font-semibold text-sm transition-all duration-200 focus:outline-none border border-neutral-400 ${
-                  cartAdded
-                    ? "bg-neutral-800 text-white scale-[0.98]"
-                    : selectedSize
-                      ? "bg-neutral-800 "
-                      : "bg-neutral-800 text-neutral-500 cursor-not-allowed"
-                }`}
+                className={`flex-1 flex items-center justify-center bg-white gap-2 py-3.5 px-6 rounded-xl font-semibold text-sm transition-all duration-200 focus:outline-none border border-neutral-400`}
               >
-                {cartAdded ? (
-                  <>
-                    <svg
-                      className="w-4 h-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                    >
-                      <path d="M20 6 9 17l-5-5" />
-                    </svg>
-                    Added to Cart!
-                  </>
-                ) : (
-                  <>
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                      <line x1="3" y1="6" x2="21" y2="6" />
-                      <path d="M16 10a4 4 0 0 1-8 0" />
-                    </svg>
-                    Add to Cart
-                  </>
-                )}
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                Add to Cart
               </button>
             </div>
-
             {/* Wishlist + Share */}
             <div className="flex gap-3 mt-3">
               <button
@@ -364,36 +401,6 @@ export default function ProductDetails() {
               </button>
             </div>
             <hr className="my-6 border-gray-100" />
-
-            {/* Meta Info */}
-            <div className="space-y-2.5 text-sm">
-              {[
-                { label: "SKU", value: "WH1000XM4" },
-                { label: "Category", value: "Jackets, Outerwear" },
-              ].map((m) => (
-                <div key={m.label} className="flex gap-3">
-                  <span className="text-gray-400 w-20 shrink-0 font-medium">
-                    {m.label}
-                  </span>
-                  <span className="text-gray-700">{m.value}</span>
-                </div>
-              ))}
-              <div className="flex gap-3 items-center">
-                <span className="text-gray-400 w-20 shrink-0 font-medium">
-                  Tags
-                </span>
-                <div className="flex gap-2 flex-wrap">
-                  {["Winter", "Lightweight", "Hood"].map((tag) => (
-                    <span
-                      key={tag}
-                      className="bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs px-2.5 py-1 rounded-full font-medium cursor-pointer transition-colors"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </Container>
