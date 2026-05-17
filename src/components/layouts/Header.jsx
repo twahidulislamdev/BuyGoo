@@ -12,36 +12,14 @@ import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import { BiSolidContact } from "react-icons/bi";
 import CartSidebar from "./CartSidebar";
+import { useCartStore } from "../../stores/cartStore";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
 
-  // Demo cart state — replace with your real cart context/store
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Zessi Dresses",
-      variant: "Black / XL",
-      price: 49.0,
-      qty: 1,
-      image:
-        "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&q=80",
-    },
-  ]);
-
-  const handleUpdateQty = (id, newQty) => {
-    if (newQty < 1) return;
-    setCartItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, qty: newQty } : item)),
-    );
-  };
-
-  const handleRemove = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const totalItems = cartItems.reduce((s, i) => s + i.qty, 0);
+  const { cart } = useCartStore();
+  const totalItems = cart.reduce((s, i) => s + i.quantity, 0);
 
   // Handle scroll detection
   useEffect(() => {
@@ -68,13 +46,7 @@ const Header = () => {
   return (
     <>
       {/* Cart Sidebar */}
-      <CartSidebar
-        isOpen={cartOpen}
-        onClose={() => setCartOpen(false)}
-        cartItems={cartItems}
-        onUpdateQty={handleUpdateQty}
-        onRemove={handleRemove}
-      />
+      <CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
       {/*======== Desktop Header part start Here ========*/}
       <div

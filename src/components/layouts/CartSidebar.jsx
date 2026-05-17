@@ -1,9 +1,26 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { X, Minus, Plus, ShoppingBag } from "lucide-react";
+import { useCartStore } from "../../stores/cartStore";
 
-const CartSidebar = ({ isOpen, onClose, cartItems, onUpdateQty, onRemove }) => {
+const CartSidebar = ({ isOpen, onClose }) => {
   const sidebarRef = useRef(null);
+  const { cart, removeFromCart, updateQuantity } = useCartStore();
+  const totalItems = cart.reduce((s, i) => s + (i.quantity || 1), 0);
+
+  const removeProduct = (id) => {
+    removeFromCart({ id });
+  };
+
+  const updateCartQuantity = (id, quantity) => {
+    updateQuantity({ id }, quantity);
+  };
+
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.price * (item.quantity || 1),
+    0,
+  );
+  const total = subtotal;
 
   // Close on outside click
   useEffect(() => {
@@ -23,11 +40,6 @@ const CartSidebar = ({ isOpen, onClose, cartItems, onUpdateQty, onRemove }) => {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
-
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.qty,
-    0,
-  );
 
   return (
     <>
@@ -54,7 +66,7 @@ const CartSidebar = ({ isOpen, onClose, cartItems, onUpdateQty, onRemove }) => {
             <span className="text-[15px] font-semibold text-gray-900 tracking-wide">
               Your Bag
               <span className="ml-2 text-xs font-bold bg-mainColor text-white rounded-full px-2 py-0.5">
-                {cartItems.reduce((s, i) => s + i.qty, 0)}
+                {totalItems}
               </span>
             </span>
           </div>
@@ -68,7 +80,7 @@ const CartSidebar = ({ isOpen, onClose, cartItems, onUpdateQty, onRemove }) => {
 
         {/* Items */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-          {cartItems.length === 0 ? (
+          {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-4 text-gray-400">
               <ShoppingBag size={48} strokeWidth={1} />
               <p className="text-sm font-medium">Your bag is empty</p>
@@ -80,63 +92,103 @@ const CartSidebar = ({ isOpen, onClose, cartItems, onUpdateQty, onRemove }) => {
               </button>
             </div>
           ) : (
-            cartItems.map((item) => (
+            cart.map((item) => (
               <div
                 key={item.id}
-                className="flex gap-3 bg-white rounded-xl border border-gray-100 p-3 shadow-sm hover:shadow-md transition-shadow duration-200"
+                className="flex gap-4 bg-white rounded-2xl border border-gray-200 p-3 shadow-sm hover:shadow-md transition-all duration-300 group"
               >
                 {/* Image */}
-                <div className="w-[80px] h-[90px] rounded-lg overflow-hidden bg-gray-50 flex-shrink-0">
+                <div className="w-[85px] h-[95px] rounded-xl overflow-hidden bg-gray-50 flex-shrink-0 border border-gray-100 relative">
                   <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
+                    src={item.imgSrcFirst}
+                    alt={item.title || "Product image"}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
 
                 {/* Details */}
                 <div className="flex-1 flex flex-col justify-between py-0.5">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-[13px] font-semibold text-gray-900 leading-tight">
-                        {item.name}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1">
+                      <p className="text-[14px] font-bold text-gray-900 leading-tight">
+                        {item.title}
                       </p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">
-                        {item.variant}
-                      </p>
+
+                      {/* Color and Size */}
+                      {((item.colors && item.colors.length > 0) || 
+                        (item.sizes && item.sizes.length > 0)) && (
+                        <div className="flex flex-wrap items-center gap-2 mt-1.5 text-[12px] font-medium text-gray-500">
+                          {item.colors && item.colors.length > 0 && (
+                            <div className="flex items-center gap-1.5 bg-gray-100 px-2 py-0.5 rounded-md text-gray-600">
+                              {item.colors[0]?.hex && (
+                                <span 
+                                  className="w-2.5 h-2.5 rounded-full shadow-sm border border-black/10" 
+                                  style={{ backgroundColor: item.colors[0].hex }}
+                                ></span>
+                              )}
+                              <span>{item.colors[0]?.name || "Color"}</span>
+                            </div>
+                          )}
+                          {item.sizes && item.sizes.length > 0 && (
+                            <span className="bg-gray-100 px-2 py-0.5 rounded-md text-gray-600">
+                              {item.sizes[0]?.name || item.sizes[0]}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {item.variant && !item.colors && !item.sizes && (
+                        <p className="text-[12px] text-gray-400 mt-1">
+                          {item.variant}
+                        </p>
+                      )}
                     </div>
                     <button
-                      onClick={() => onRemove(item.id)}
-                      className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors flex-shrink-0 ml-1"
+                      onClick={() => removeProduct(item.id)}
+                      className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-200 hover:bg-red-50 hover:border-red-200 text-gray-400 hover:text-red-500 transition-all flex-shrink-0 bg-white shadow-sm"
                     >
-                      <X size={12} className="text-gray-400" />
+                      <X size={14} />
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between mt-2">
+                  <div className="flex items-center justify-between mt-3">
                     {/* Qty control */}
-                    <div className="flex items-center gap-2 border border-gray-200 rounded-md px-2 py-1">
+                    <div className="flex items-center gap-3 border border-gray-200 rounded-lg px-2 py-1 bg-gray-50/50">
                       <button
-                        onClick={() => onUpdateQty(item.id, item.qty - 1)}
-                        className="text-gray-500 hover:text-mainColor transition-colors"
+                        onClick={() =>
+                          updateCartQuantity(
+                            item.id,
+                            Math.max(1, (item.quantity || 1) - 1),
+                          )
+                        }
+                        className="w-5 h-5 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:text-mainColor hover:border-mainColor transition-colors shadow-sm"
                       >
-                        <Minus size={12} />
+                        <Minus size={12} strokeWidth={2.5} />
                       </button>
-                      <span className="text-[13px] font-semibold text-gray-800 w-4 text-center">
-                        {item.qty}
+                      <span className="text-[13px] font-bold text-gray-800 w-4 text-center">
+                        {item.quantity || 1}
                       </span>
                       <button
-                        onClick={() => onUpdateQty(item.id, item.qty + 1)}
-                        className="text-gray-500 hover:text-mainColor transition-colors"
+                        onClick={() =>
+                          updateCartQuantity(item.id, (item.quantity || 1) + 1)
+                        }
+                        className="w-5 h-5 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:text-mainColor hover:border-mainColor transition-colors shadow-sm"
                       >
-                        <Plus size={12} />
+                        <Plus size={12} strokeWidth={2.5} />
                       </button>
                     </div>
 
                     {/* Price */}
-                    <span className="text-[14px] font-bold text-gray-900">
-                      ${(item.price * item.qty).toFixed(2)}
-                    </span>
+                    <div className="flex flex-col items-end">
+                      <span className="text-[15px] font-extrabold text-gray-900">
+                        ${(item.price * (item.quantity || 1)).toFixed(2)}
+                      </span>
+                      {item.quantity > 1 && (
+                        <span className="text-[11px] font-medium text-gray-400 mt-0.5">
+                          ${item.price.toFixed(2)} each
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -145,7 +197,7 @@ const CartSidebar = ({ isOpen, onClose, cartItems, onUpdateQty, onRemove }) => {
         </div>
 
         {/* Footer */}
-        {cartItems.length > 0 && (
+        {cart.length > 0 && (
           <div className="px-5 py-5 border-t border-gray-100 bg-gray-50/60 space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-gray-700">

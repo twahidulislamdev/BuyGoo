@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { HiOutlineHeart } from "react-icons/hi2";
+import { useCartStore } from "../stores/cartStore";
 
 const ProductCard = ({
   title,
@@ -8,12 +9,37 @@ const ProductCard = ({
   badgeText,
   imgSrcFirst,
   imgAlt,
-  badgeClassName,
-  priceClassName,
-  productClassName,
   currency = "৳",
   isSmall = false,
+  parsedSizes,
+  parsedColors,
+  productClassName,
+  priceClassName,
+  badgeClassName,
 }) => {
+  const { cart, addToCart } = useCartStore();
+
+  const product = {
+    id: title,
+    title,
+    price,
+    imgSrcFirst,
+    imgAlt,
+    sizes: parsedSizes,
+    colors: parsedColors,
+    quantity: 1,
+  };
+  const isInCart = cart.some((item) => item.id === product.id);
+  // Add to cart Button
+  const handleAddToCart = () => {
+    if (!isInCart) {
+      addToCart(product);
+    }
+  };
+
+  // Go to Product Details Page with Add to Cart Data
+  const handleProductDetails = () => {};
+
   return (
     <div
       className={`relative w-full h-full flex flex-col bg-white rounded-2xl shadow-sm border border-neutral-400 overflow-hidden transition-shadow duration-300 hover:shadow-md ${productClassName}`}
@@ -36,19 +62,23 @@ const ProductCard = ({
       </div>
 
       {/* Image Area */}
-      <Link to={"/product-details"} className="w-full group">
-        <div
-          className="relative w-full flex items-center justify-center overflow-hidden"
-          style={{ height: isSmall ? "140px" : "260px" }}
+      <Link to={"/productdetails"}>
+        <button
+          onClick={handleProductDetails}
+          className="w-full group cursor-pointer"
         >
-          <img
-            src={imgSrcFirst}
-            alt={imgAlt}
-            className={`object-contain w-auto transition-transform duration-500 group-hover:scale-105 ${isSmall ? "h-[100px]" : "h-[220px]"}`}
-          />
-        </div>
+          <div
+            className="relative w-full flex items-center justify-center overflow-hidden"
+            style={{ height: isSmall ? "140px" : "260px" }}
+          >
+            <img
+              src={imgSrcFirst}
+              alt={imgAlt}
+              className={`object-contain w-auto transition-transform duration-500 group-hover:scale-105 ${isSmall ? "h-[100px]" : "h-[220px]"}`}
+            />
+          </div>
+        </button>
       </Link>
-
       {/* Info Area */}
       <div
         className={`px-4 pb-5 flex flex-col flex-grow rounded-t-2xl border-t-1 border-neutral-300 ${isSmall ? "pt-2 gap-1.5" : "pt-4 gap-3"}`}
@@ -85,9 +115,10 @@ const ProductCard = ({
             Shop Now
           </Link>
           <button
-            className={`flex items-center justify-center rounded-full border border-neutral-500 hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-all duration-250 text-[#1a1a1a] cursor-pointer ${isSmall ? "w-8 h-8" : " w-8 h-8 lg:w-10 lg:h-10"}`}
+            onClick={handleAddToCart}
+            className={`flex items-center justify-center rounded-full border border-neutral-500 hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-all duration-250 ${isInCart ? "bg-[#1a1a1a] text-white border-[#1a1a1a]" : "text-[#1a1a1a]"} cursor-pointer ${isSmall ? "w-9 h-9" : " w-8 h-8 lg:w-10 lg:h-10"}`}
           >
-            <ShoppingCart size={16} />
+            <ShoppingCart sizes={15} />
           </button>
         </div>
       </div>
