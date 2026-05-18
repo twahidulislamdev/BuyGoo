@@ -2,30 +2,7 @@ import { useState } from "react";
 import Container from "../Container";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import GalaxyS25Black from "../../assets/titaniumBlack.jpg";
-import Iphone16Black from "../../assets/phoneThree.jpg";
 import { useCartStore } from "../../stores/cartStore";
-
-const initialItems = [
-  {
-    id: 1,
-    name: "Premium Cotton Hoodie",
-    color: "Black",
-    size: "Size L",
-    price: 120,
-    quantity: 2,
-    image: GalaxyS25Black,
-  },
-  {
-    id: 2,
-    name: "Classic Sneakers",
-    color: "White",
-    size: "Size 42",
-    price: 85,
-    quantity: 1,
-    image: Iphone16Black,
-  },
-];
 
 export default function ShoppingCart() {
   const { cart, removeFromCart, updateQuantity } = useCartStore();
@@ -49,7 +26,10 @@ export default function ShoppingCart() {
     removeFromCart({ id });
   };
 
-  const subtotal = items.reduce((sum, i) => sum + i.price * (i.quantity || 1), 0);
+  const subtotal = items.reduce(
+    (sum, i) => sum + i.price * (i.quantity || 1),
+    0,
+  );
   const shipping = delivery === "local" ? 5 : 20;
   const tax = parseFloat((subtotal * 0.03).toFixed(2));
   const total = (subtotal + shipping + tax).toFixed(2);
@@ -86,7 +66,9 @@ export default function ShoppingCart() {
                   <line x1="3" y1="6" x2="21" y2="6" />
                   <path d="M16 10a4 4 0 0 1-8 0" />
                 </svg>
-                <p className="text-base font-medium">Your shopping cart is empty</p>
+                <p className="text-base font-medium">
+                  Your shopping cart is empty
+                </p>
                 <Link to="/shop">
                   <button className="bg-black text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition hover:bg-neutral-800">
                     Go to Shop
@@ -108,7 +90,7 @@ export default function ShoppingCart() {
                     />
                   </div>
 
-                  {/* Details */}
+                  {/* Info Like: Title, Price, Colors, Size, RAM, Storage, Quantity */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div>
@@ -118,7 +100,8 @@ export default function ShoppingCart() {
                         <div className="flex gap-1.5 flex-wrap">
                           {(item.color || item.colors) && (
                             <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
-                              {(item.color === "White" || item.colors === "White") && (
+                              {(item.color === "White" ||
+                                item.colors === "White") && (
                                 <span className="w-2 h-2 rounded-full bg-white border border-gray-300 shrink-0" />
                               )}
                               {item.color || item.colors}

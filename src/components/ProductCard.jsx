@@ -21,6 +21,18 @@ const ProductCard = ({
 }) => {
   const { cart, addToCart } = useCartStore();
 
+  const colorVal = Array.isArray(colors)
+    ? colors[0]?.name || colors[0]
+    : typeof colors === "object"
+    ? colors?.name
+    : colors;
+
+  const sizeVal = Array.isArray(sizes)
+    ? sizes[0]?.name || sizes[0]
+    : typeof sizes === "object"
+    ? sizes?.name
+    : sizes;
+
   const product = {
     id: title,
     title,
@@ -29,8 +41,8 @@ const ProductCard = ({
     storage,
     imgSrcFirst,
     imgAlt,
-    sizes: sizes?.name,
-    colors: colors?.name,
+    sizes: sizeVal,
+    colors: colorVal,
     quantity: 1,
   };
   const isInCart = cart.some((item) => item.id === product.id);
@@ -42,7 +54,22 @@ const ProductCard = ({
   };
 
   // Go to Product Details Page with Add to Cart Data
-  const handleProductDetails = () => {};
+  const handleProductDetails = () => {
+    const productToAdd = {
+      id: product.id,
+      title,
+      price,
+      ram,
+      storage,
+      imgSrcFirst,
+      imgAlt,
+      sizes: sizeVal,
+      colors: colorVal,
+      quantity: 1,
+    };
+    // Store data in session storage to use in product details page
+    sessionStorage.setItem("productToAdd", JSON.stringify(productToAdd));
+  };
 
   return (
     <div
@@ -113,7 +140,8 @@ const ProductCard = ({
         {/* Actions */}
         <div className="flex items-center gap-2 mt-auto">
           <Link
-            to={"/product-details"}
+            to={"/productdetails"}
+            onClick={handleProductDetails}
             className={`flex-1 flex items-center justify-center rounded-full border border-neutral-500 font-medium text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all duration-250 ${isSmall ? "px-2 lg:px-5 py-1 lg:py-2  text-sm" : "text-sm lg:text-base px-2 lg:px-5 py-1.5 lg:py-2"}`}
           >
             Shop Now

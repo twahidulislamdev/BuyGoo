@@ -2,39 +2,29 @@ import { useState } from "react";
 import Container from "../Container";
 import { useCartStore } from "../../stores/cartStore";
 
-const images = [
-  {
-    id: 1,
-    src: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600&q=80",
-    alt: "Black hoodie front",
-  },
-  {
-    id: 2,
-    src: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80",
-    alt: "Red puffer jacket front",
-  },
-  {
-    id: 3,
-    src: "https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=600&q=80",
-    alt: "Red puffer jacket side",
-  },
-  {
-    id: 4,
-    src: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600&q=80",
-    alt: "Red hoodie",
-  },
-];
-
+const storageOptions = ["8/128GB", "8/256GB", "12/256GB", "12/512GB", "12/1TB"];
 const colorOptions = [
   { name: "Midnight Black", hex: "#1a1a1a" },
   { name: "Slate Gray", hex: "#6b7280" },
   { name: "Crimson Red", hex: "#dc2626" },
-  { name: "Slate Gray", hex: "#6b7280" },
+  { name: "Pearl White", hex: "#e5e7eb" },
 ];
 
-const storageOptions = ["8/128GB", "8/256GB", "12/256GB", "12/512GB", "12/1TB"];
-
 export default function ProductDetails() {
+  const productData = JSON.parse(
+    sessionStorage.getItem("productToAdd") || "null",
+  );
+  const productTitle = productData?.title || "";
+  const productPrice = productData?.price || 0;
+  const productRam = productData?.ram || "";
+  const productStorage = productData?.storage || "";
+  const productColor = productData?.colors || "";
+  const productSize = productData?.sizes || "";
+  const productImage = productData?.imgSrcFirst || "";
+  const imagesList = productImage
+    ? [{ id: 1, src: productImage, alt: productData?.imgAlt || productTitle }]
+    : images;
+
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedStorage, setSelectedStorage] = useState(0);
@@ -42,40 +32,35 @@ export default function ProductDetails() {
   const [wishlistAdded, setWishlistAdded] = useState(false);
 
   const { cart, addToCart } = useCartStore();
-  const productId = "Colorful Comfortable Jacket";
+  const productId = productData?.id || productTitle;
   const isInCart = cart.some((item) => item.id === productId);
 
+  // Add To Cart Functionality
   const handleAddToCart = () => {
     if (isInCart) return;
-
-    const storageStr = storageOptions[selectedStorage];
-    const parts = storageStr.split("/");
-    const ramVal = parts[0] ? `${parts[0]} RAM` : "";
-    const storageVal = parts[1] || storageStr;
-
+    const [ram, storage] = storageOptions[selectedStorage].split("/");
     addToCart({
       id: productId,
-      title: productId,
-      price: 12999,
-      ram: ramVal,
-      storage: storageVal,
-      imgSrcFirst: images[selectedImage].src,
-      imgAlt: productId,
-      colors: colorOptions[selectedColor].name,
-      quantity: quantity,
+      title: productTitle,
+      price: productPrice,
+      ram: productRam || `${ram} RAM`,
+      storage: productStorage || storage,
+      imgSrcFirst: productImage || imagesList[selectedImage]?.src,
+      imgAlt: productTitle,
+      colors: productColor || colorOptions[selectedColor].name,
+      sizes: productSize,
+      quantity,
     });
   };
 
-  const handleWishlist = () => setWishlistAdded((prev) => !prev);
-
   const prevImage = () =>
-    setSelectedImage((p) => (p - 1 + images.length) % images.length);
-  const nextImage = () => setSelectedImage((p) => (p + 1) % images.length);
+    setSelectedImage((p) => (p - 1 + imagesList.length) % imagesList.length);
+  const nextImage = () => setSelectedImage((p) => (p + 1) % imagesList.length);
 
   return (
     <div className="bg-white lg:h-screen pb-24 lg:pb-0">
       <Container>
-        <div className="py-2 lg:py-5 px-3 lg:px-0 grid grid-cols-1 lg:grid-cols-[45fr_55fr] gap-5 lg:gap-5 items-start">
+        <div className="py-2 lg:py-5 px-3 lg:px-0 grid grid-cols-1 lg:grid-cols-[45fr_55fr] gap-5 items-start">
           {/* ═══════════════ LEFT — Gallery ═══════════════ */}
           <div className="flex flex-col gap-3">
             {/* Main Image */}
@@ -85,54 +70,52 @@ export default function ProductDetails() {
             >
               <img
                 key={selectedImage}
-                src={images[selectedImage].src}
-                alt={images[selectedImage].alt}
+                src={imagesList[selectedImage]?.src}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 style={{ animation: "fadeIn 0.35s ease" }}
               />
-
-              {/* Gradient overlay bottom */}
               <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/10 to-transparent pointer-events-none rounded-b-2xl" />
 
-              {/* Slider Arrows */}
-              <button
-                onClick={prevImage}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white rounded-full shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 border border-gray-100"
-              >
-                <svg
-                  className="w-4 h-4 text-gray-700"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  viewBox="0 0 24 24"
+              {/* Arrows */}
+              {[
+                {
+                  dir: "prev",
+                  icon: "m15 18-6-6 6-6",
+                  pos: "left-3",
+                  fn: prevImage,
+                },
+                {
+                  dir: "next",
+                  icon: "m9 18 6-6-6-6",
+                  pos: "right-3",
+                  fn: nextImage,
+                },
+              ].map(({ dir, icon, pos, fn }) => (
+                <button
+                  key={dir}
+                  onClick={fn}
+                  className={`absolute ${pos} top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white rounded-full shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 border border-gray-100`}
                 >
-                  <path d="m15 18-6-6 6-6" />
-                </svg>
-              </button>
-              <button
-                onClick={nextImage}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white rounded-full shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 border border-gray-100"
-              >
-                <svg
-                  className="w-4 h-4 text-gray-700"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
-              </button>
+                  <svg
+                    className="w-4 h-4 text-gray-700"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d={icon} />
+                  </svg>
+                </button>
+              ))}
 
-              {/* Image counter pill */}
               <div className="absolute bottom-3 right-3 bg-black/50 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur-sm font-medium">
-                {selectedImage + 1} / {images.length}
+                {selectedImage + 1} / {imagesList.length}
               </div>
             </div>
 
-            {/* Thumbnail Strip */}
+            {/* Thumbnails */}
             <div className="grid grid-cols-4 gap-3">
-              {images.map((img, idx) => (
+              {imagesList.map((img, idx) => (
                 <button
                   key={img.id}
                   onClick={() => setSelectedImage(idx)}
@@ -158,169 +141,114 @@ export default function ProductDetails() {
 
           {/* ═══════════════ RIGHT — Product Info ═══════════════ */}
           <div className="flex flex-col bg-neutral-100 p-3 rounded-xl border border-neutral-300">
+            {/* Title & Price */}
             <div className="flex justify-between items-start">
-              {/* Title */}
-              <div className="">
-                <h1 className="text-lg lg:text-2xl font-semibold ">
-                  Colorful Comfortable Jacket
+              <div>
+                <h1 className="text-lg lg:text-2xl font-semibold">
+                  {productTitle}
                 </h1>
                 <p className="text-sm text-neutral-600 px-1 pt-2">
-                  China   || 8/128GB   || Purple{" "}
+                  {productRam || productStorage ? (
+                    <>
+                      {productRam} {productRam && productStorage ? "||" : ""}{" "}
+                      {productStorage}
+                    </>
+                  ) : (
+                    "China   || 8/128GB"
+                  )}
+                  {productColor && `   || ${productColor}`}
+                  {productSize && `   || ${productSize}`}{" "}
                   <span className="text-red-500">(OFFICIAL WARRANTY)</span>
                 </p>
               </div>
-              {/* price */}
               <div className="flex flex-col items-end">
                 <span className="text-sm lg:text-lg font-semibold text-amber-600">
-                  BDT {12999}
+                  BDT {productPrice.toLocaleString()}
                 </span>
                 <span className="text-xs lg:text-sm text-neutral-500 line-through font-medium">
-                  BDT {1999}
+                  BDT {(productPrice * 1.3).toLocaleString()}
                 </span>
               </div>
             </div>
-            {/* Short Description */}
+
+            {/* Key Specs */}
             <div className="mt-3 p-3 rounded-xl border border-neutral-300 bg-white/50">
               <span className="text-sm font-semibold uppercase tracking-widest text-gray-500 block mb-3">
                 Key Specifications
               </span>
               <ul className="space-y-3 text-sm text-gray-600">
-                <li className="flex items-start gap-3">
-                  <svg
-                    className="w-5 h-5 text-gray-500 shrink-0 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <span>
-                    <strong className="font-medium text-gray-800">
-                      Display:
-                    </strong>{" "}
-                    6.83″ AMOLED, 120Hz, HDR10+, Dolby Vision, Xiaomi Dragon
-                    Crystal Glass
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg
-                    className="w-5 h-5 text-gray-500 shrink-0 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
-                    />
-                  </svg>
-                  <span>
-                    <strong className="font-medium text-gray-800">
-                      Performance:
-                    </strong>{" "}
-                    Dimensity 7400 Ultra, up to 12GB RAM, UFS 2.2
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg
-                    className="w-5 h-5 text-gray-500 shrink-0 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                  <span>
-                    <strong className="font-medium text-gray-800">
-                      Cameras:
-                    </strong>{" "}
-                    50MP OIS main + 8MP ultrawide, 20MP selfie, 4K video
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg
-                    className="w-5 h-5 text-gray-500 shrink-0 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M4 7h14a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V9a2 2 0 012-2z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M22 11v2"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M6 10v4"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M10 10v4"
-                    />
-                  </svg>
-                  <span>
-                    <strong className="font-medium text-gray-800">
-                      Battery:
-                    </strong>{" "}
-                    7000mAh, 45W wired, 22.5W reverse wired
-                  </span>
-                </li>
+                {[
+                  {
+                    label: "Display",
+                    value:
+                      "6.83″ AMOLED, 120Hz, HDR10+, Dolby Vision, Xiaomi Dragon Crystal Glass",
+                    path: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
+                  },
+                  {
+                    label: "Performance",
+                    value: "Dimensity 7400 Ultra, up to 12GB RAM, UFS 2.2",
+                    path: "M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z",
+                  },
+                  {
+                    label: "Cameras",
+                    value:
+                      "50MP OIS main + 8MP ultrawide, 20MP selfie, 4K video",
+                    path: "M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z",
+                  },
+                  {
+                    label: "Battery",
+                    value: "7000mAh, 45W wired, 22.5W reverse wired",
+                    path: "M4 7h14a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V9a2 2 0 012-2z M22 11v2 M6 10v4 M10 10v4",
+                  },
+                ].map(({ label, value, path }) => (
+                  <li key={label} className="flex items-start gap-3">
+                    <svg
+                      className="w-5 h-5 text-gray-500 shrink-0 mt-0.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
+                        d={path}
+                      />
+                    </svg>
+                    <span>
+                      <strong className="font-medium text-gray-800">
+                        {label}:
+                      </strong>{" "}
+                      {value}
+                    </span>
+                  </li>
+                ))}
               </ul>
             </div>
 
-            {/* Color Selector */}
-            <div>
-              <span className="mt-3 px-3 text-base font-semibold uppercase tracking-widest text-gray-500 block mb-3">
-                Color —{" "}
-                <span className="text-gray-800 normal-case font-medium tracking-normal">
-                  {colorOptions[selectedColor].name}
-                </span>
+            {/* ── Color Selector ── */}
+            <div className="mt-3">
+              <span className="px-1 text-sm font-semibold uppercase tracking-widest text-gray-500 block mb-2">
+                Color
               </span>
-              <div className="flex gap-5.5 px-5">
+              <div className="flex flex-wrap gap-2 px-1">
                 {colorOptions.map((c, i) => (
                   <button
-                    key={c.name}
+                    key={c.name + i}
                     onClick={() => setSelectedColor(i)}
-                    title={c.name}
-                    className={`w-9 h-9 rounded-lg transition-all duration-300 focus:outline-none relative flex items-center justify-center ${
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 transition-all duration-200 focus:outline-none bg-white cursor-pointer ${
                       selectedColor === i
-                        ? "ring-2 ring-offset-2 ring-gray-900 scale-110 shadow-lg"
-                        : "ring-1 ring-gray-200 ring-offset-1 hover:ring-gray-400 hover:scale-105"
+                        ? "border-2 border-amber-600 shadow-sm"
+                        : "border-gray-200 hover:border-gray-400"
                     }`}
-                    style={{ backgroundColor: c.hex }}
                   >
-                    {selectedColor === i && (
-                      <span className="w-3.5 h-3.5 rounded-full bg-white/40 shadow-sm backdrop-blur-sm" />
-                    )}
+                    <span
+                      className="w-4 h-4 rounded-full shrink-0 border border-black/10"
+                      style={{ backgroundColor: c.hex }}
+                    />
+                    <span className="text-sm font-medium text-gray-700">
+                      {c.name}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -328,20 +256,20 @@ export default function ProductDetails() {
 
             {/* Storage Selector */}
             <div>
-              <span className="mt-5 px-3 text-base font-semibold uppercase tracking-widest text-gray-500 block mb-3">
+              <span className="mt-4 px-1 text-sm font-semibold uppercase tracking-widest text-gray-500 block mb-2">
                 Storage —{" "}
                 <span className="text-gray-800 normal-case font-medium tracking-normal">
                   {storageOptions[selectedStorage]}
                 </span>
               </span>
-              <div className="flex flex-wrap gap-3 px-3 mb-3">
+              <div className="flex flex-wrap gap-3 px-1 mb-3">
                 {storageOptions.map((s, i) => (
                   <button
                     key={s}
                     onClick={() => setSelectedStorage(i)}
-                    className={`px-4 h-10 rounded-lg border-2 text-sm font-semibold transition-all duration-300 focus:outline-none flex items-center justify-center ${
+                    className={`px-5 h-9 rounded-lg border-2 text-sm font-semibold transition-all duration-300 focus:outline-none cursor-pointer ${
                       selectedStorage === i
-                        ? "border-gray-900 bg-gray-900 text-white shadow-lg scale-105"
+                        ? "border-2 border-2 border-amber-600 text-black shadow-lg scale-105"
                         : "border-gray-200 text-gray-600 hover:border-gray-400 hover:shadow-sm hover:scale-105 bg-white"
                     }`}
                   >
@@ -350,13 +278,13 @@ export default function ProductDetails() {
                 ))}
               </div>
             </div>
+
             {/* Quantity + Add to Cart */}
             <div className="flex gap-3 items-stretch">
-              {/* Quantity */}
               <div className="flex items-center bg-white border border-neutral-400 rounded-xl overflow-hidden">
                 <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-11 h-full flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors text-xl font-light"
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  className="w-11 h-full flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors text-xl font-light cursor-pointer"
                 >
                   −
                 </button>
@@ -364,45 +292,34 @@ export default function ProductDetails() {
                   {quantity}
                 </span>
                 <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="w-11 h-full flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors text-xl font-light"
+                  onClick={() => setQuantity((q) => q + 1)}
+                  className="w-11 h-full flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors text-xl font-light cursor-pointer"
                 >
                   +
                 </button>
               </div>
 
-              {/* Add to Cart */}
               <button
                 onClick={handleAddToCart}
                 disabled={isInCart}
-                className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-semibold text-sm transition-all duration-200 focus:outline-none border border-neutral-400 ${
+                className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl font-semibold text-sm transition-all duration-200 focus:outline-none border border-neutral-400 ${
                   isInCart
-                    ? "bg-gray-200 text-gray-500 cursor-not-allowed border-gray-200"
-                    : "bg-white text-black hover:bg-black hover:text-white"
+                    ? "bg-black text-white cursor-not-allowed border-neutral-300"
+                    : "bg-white text-black hover:border-black hover:text-black cursor-pointer"
                 }`}
               >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <path d="M16 10a4 4 0 0 1-8 0" />
-                </svg>
-                {isInCart ? "Already in Cart" : "Add to Cart"}
+                {isInCart ? "Product Is Already Added" : "Add to Cart"}
               </button>
             </div>
+
             {/* Wishlist + Share */}
             <div className="flex gap-3 mt-3">
               <button
-                onClick={handleWishlist}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-neutral-400 text-sm font-medium transition-all duration-200 ${
+                onClick={() => setWishlistAdded((prev) => !prev)}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl border text-sm font-medium transition-all duration-200 cursor-pointer ${
                   wishlistAdded
                     ? "border-rose-400 bg-rose-50 text-rose-600 shadow-sm"
-                    : "border-gray-200 bg-white text-gray-600 hover:border-gray-400 hover:bg-gray-50"
+                    : "border-neutral-400 bg-white text-gray-600 hover:border-gray-400 hover:bg-gray-50"
                 }`}
               >
                 <svg
@@ -415,7 +332,7 @@ export default function ProductDetails() {
                 {wishlistAdded ? "Wishlisted" : "Wishlist"}
               </button>
 
-              <button className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl border border-neutral-400 bg-white text-gray-600 text-sm font-medium hover:border-gray-400 hover:bg-gray-50 transition-all duration-200">
+              <button className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl border border-neutral-400 bg-white text-gray-600 text-sm font-medium hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 cursor-pointer">
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -432,12 +349,12 @@ export default function ProductDetails() {
                 Share
               </button>
             </div>
+
             <hr className="my-6 border-gray-100" />
           </div>
         </div>
       </Container>
 
-      {/* Fade-in keyframe */}
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: scale(1.03); }

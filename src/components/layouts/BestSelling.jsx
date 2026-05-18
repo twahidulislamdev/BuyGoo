@@ -111,6 +111,8 @@ const BestSelling = () => {
                   }
                   ram={item.ram}
                   storage={item.storage}
+                  colors={item.colors}
+                  sizes={item.sizes}
                 />
               </SwiperSlide>
             ))}

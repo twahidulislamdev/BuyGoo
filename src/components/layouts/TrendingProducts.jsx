@@ -73,6 +73,8 @@ const TrendingProducts = () => {
                   imgSrcFirst={item.thumbnail || item.image || item.images?.[0]}
                   ram={item.ram}
                   storage={item.storage}
+                  colors={item.colors}
+                  sizes={item.sizes}
                 />
               ))}
             </div>
@@ -99,6 +101,8 @@ const TrendingProducts = () => {
                   }
                   ram={products[5].ram}
                   storage={products[5].storage}
+                  colors={products[5].colors}
+                  sizes={products[5].sizes}
                 />
               )}
             </div>
@@ -128,6 +132,8 @@ const TrendingProducts = () => {
                   imgSrcFirst={item.thumbnail || item.image || item.images?.[0]}
                   ram={item.ram}
                   storage={item.storage}
+                  colors={item.colors}
+                  sizes={item.sizes}
                 />
               ))}
             </div>

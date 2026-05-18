@@ -7,7 +7,7 @@ export const useCartStore = create(
       cart: [],
       addToCart: (product) =>
         set((state) => ({
-          cart: [...state.cart, { ...product, quantity: 1 }],
+          cart: [...state.cart, { ...product, quantity: product.quantity || 1 }],
         })),
       removeFromCart: (product) =>
         set((state) => ({

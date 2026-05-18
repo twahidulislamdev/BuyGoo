@@ -11,12 +11,10 @@ import {
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import { BiSolidContact } from "react-icons/bi";
-import CartSidebar from "./CartSidebar";
 import { useCartStore } from "../../stores/cartStore";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
 
   const { cart } = useCartStore();
   const totalItems = cart.reduce((s, i) => s + i.quantity, 0);
@@ -45,9 +43,6 @@ const Header = () => {
 
   return (
     <>
-      {/* Cart Sidebar */}
-      <CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} />
-
       {/*======== Desktop Header part start Here ========*/}
       <div
         className={`hidden lg:block sticky top-0 py-5 w-full z-[99] transition-all duration-300 ${
@@ -89,8 +84,8 @@ const Header = () => {
               <FaRegHeart className="text-black text-xl cursor-pointer hover:text-mainColor transition-colors" />
 
               {/* Cart icon with badge */}
-              <button
-                onClick={() => setCartOpen(true)}
+              <Link
+                to="/addtocart"
                 className="relative cursor-pointer text-black hover:text-mainColor transition-colors"
               >
                 <HiOutlineShoppingBag className="text-2xl" />
@@ -99,7 +94,7 @@ const Header = () => {
                     {totalItems}
                   </span>
                 )}
-              </button>
+              </Link>
 
               <Link to="/login">
                 <FaRegUser className="text-black text-xl cursor-pointer hover:text-mainColor transition-colors" />
@@ -134,8 +129,8 @@ const Header = () => {
             <FaRegHeart className="text-black text-xl cursor-pointer" />
 
             {/* Mobile Cart icon with badge */}
-            <button
-              onClick={() => setCartOpen(true)}
+            <Link
+              to="/addtocart"
               className="relative cursor-pointer"
             >
               <HiOutlineShoppingBag className="text-black text-2xl" />
@@ -144,7 +139,7 @@ const Header = () => {
                   {totalItems}
                 </span>
               )}
-            </button>
+            </Link>
 
             <Link to={"/login"}>
               <FaRegUser className="text-black text-xl cursor-pointer" />

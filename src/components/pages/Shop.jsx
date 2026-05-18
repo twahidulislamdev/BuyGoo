@@ -227,6 +227,8 @@ const Shop = () => {
                   badgeClassName={item.badge ? "bg-green-300" : ""}
                   ram={item.ram}
                   storage={item.storage}
+                  colors={item.colors}
+                  sizes={item.sizes}
                 />
               ))}
             </div>
