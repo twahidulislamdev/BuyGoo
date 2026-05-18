@@ -53,6 +53,8 @@ const OurProducts = () => {
                   imgAlt={item.name}
                   badgeText={item.badge}
                   badgeClassName={item.badge ? "bg-green-300" : ""}
+                  ram={item.ram}
+                  storage={item.storage}
                 />
               </div>
             ))}

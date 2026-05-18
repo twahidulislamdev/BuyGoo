@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import GalaxyS25Black from "../../assets/titaniumBlack.jpg";
 import Iphone16Black from "../../assets/phoneThree.jpg";
+import { useCartStore } from "../../stores/cartStore";
 
 const initialItems = [
   {
@@ -27,24 +28,28 @@ const initialItems = [
 ];
 
 export default function ShoppingCart() {
-  const [items, setItems] = useState(initialItems);
+  const { cart, removeFromCart, updateQuantity } = useCartStore();
+  const items = cart.length > 0 ? cart : [];
   const [delivery, setDelivery] = useState("local");
   const [promo, setPromo] = useState("");
 
   const updateQty = (id, delta) => {
-    setItems((prev) =>
-      prev
-        .map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity + delta } : item,
-        )
-        .filter((item) => item.quantity > 0),
-    );
+    const item = items.find((i) => i.id === id);
+    if (item) {
+      const newQty = (item.quantity || 1) + delta;
+      if (newQty <= 0) {
+        removeFromCart({ id });
+      } else {
+        updateQuantity({ id }, newQty);
+      }
+    }
   };
 
-  const removeItem = (id) =>
-    setItems((prev) => prev.filter((i) => i.id !== id));
+  const removeItem = (id) => {
+    removeFromCart({ id });
+  };
 
-  const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const subtotal = items.reduce((sum, i) => sum + i.price * (i.quantity || 1), 0);
   const shipping = delivery === "local" ? 5 : 20;
   const tax = parseFloat((subtotal * 0.03).toFixed(2));
   const total = (subtotal + shipping + tax).toFixed(2);
@@ -68,91 +73,127 @@ export default function ShoppingCart() {
             </div>
 
             {/* Cart Items */}
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white rounded-2xl p-4 flex gap-3.5 items-start border border-neutral-300 shadow-sm"
-              >
-                {/* Icon */}
-                <div className="w-[100px] h-[100px] rounded-[14px] bg-gray-100 flex items-center justify-center text-4xl shrink-0">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+            {items.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-4 text-gray-400 border border-neutral-300 rounded-2xl bg-white shadow-sm">
+                <svg
+                  className="w-16 h-16 text-gray-300 animate-pulse"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                <p className="text-base font-medium">Your shopping cart is empty</p>
+                <Link to="/shop">
+                  <button className="bg-black text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition hover:bg-neutral-800">
+                    Go to Shop
+                  </button>
+                </Link>
+              </div>
+            ) : (
+              items.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white rounded-2xl p-4 flex gap-3.5 items-start border border-neutral-300 shadow-sm"
+                >
+                  {/* Icon */}
+                  <div className="w-[100px] h-[100px] rounded-[14px] bg-gray-100 flex items-center justify-center text-4xl shrink-0">
+                    <img
+                      src={item.image || item.imgSrcFirst}
+                      alt={item.name || item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
 
-                {/* Details */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <h2 className="font-semibold text-base text-gray-900 leading-snug mb-1.5">
-                        {item.name}
-                      </h2>
-                      <div className="flex gap-1.5">
-                        <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
-                          {item.color === "White" && (
-                            <span className="w-2 h-2 rounded-full bg-white border border-gray-300 shrink-0" />
+                  {/* Details */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h2 className="font-semibold text-base text-gray-900 leading-snug mb-1.5">
+                          {item.name || item.title}
+                        </h2>
+                        <div className="flex gap-1.5 flex-wrap">
+                          {(item.color || item.colors) && (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
+                              {(item.color === "White" || item.colors === "White") && (
+                                <span className="w-2 h-2 rounded-full bg-white border border-gray-300 shrink-0" />
+                              )}
+                              {item.color || item.colors}
+                            </span>
                           )}
-                          {item.color}
+                          {(item.size || item.sizes) && (
+                            <span className="inline-flex items-center text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
+                              {item.size || item.sizes}
+                            </span>
+                          )}
+                          {item.ram && (
+                            <span className="inline-flex items-center text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100">
+                              RAM: {item.ram}
+                            </span>
+                          )}
+                          {item.storage && (
+                            <span className="inline-flex items-center text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-600 border border-purple-100">
+                              Storage: {item.storage}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      {/* Delete Cart Item */}
+                      <button
+                        onClick={() => removeItem(item.id)}
+                        className="w-[30px] h-[30px] rounded-lg bg-neutral-100 border border-neutral-300 flex items-center justify-center text-neutral-800 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition shrink-0 cursor-pointer"
+                      >
+                        <svg
+                          width="13"
+                          height="13"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-3.5">
+                      <div className="flex items-center bg-neutral-100 border border-neutral-300 rounded-[10px] overflow-hidden">
+                        <button
+                          onClick={() => updateQty(item.id, -1)}
+                          className="w-[34px] h-[34px] flex items-center justify-center text-neutral-500 hover:text-gray-900 hover:bg-white text-xl font-semibold transition cursor-pointer"
+                        >
+                          −
+                        </button>
+                        <div className="w-px h-4 bg-neutral-200" />
+                        <span className="min-w-[28px] text-center text-[13px] font-semibold text-gray-900">
+                          {item.quantity || 1}
                         </span>
-                        <span className="inline-flex items-center text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
-                          {item.size}
-                        </span>
+                        <div className="w-px h-4 bg-neutral-200" />
+                        <button
+                          onClick={() => updateQty(item.id, 1)}
+                          className="w-[34px] h-[34px] flex items-center justify-center text-neutral-500 hover:text-gray-900 hover:bg-white text-xl font-semibold transition cursor-pointer"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[17px] font-bold text-gray-900">
+                          ${(item.price * (item.quantity || 1)).toFixed(2)}
+                        </p>
+                        <p className="text-[11px] text-gray-400">
+                          ${item.price} / Piece
+                        </p>
                       </div>
                     </div>
-                    {/* Delete Cart Item */}
-                    <button
-                      onClick={() => removeItem(item.id)}
-                      className="w-[30px] h-[30px] rounded-lg bg-neutral-100 border border-neutral-300 flex items-center justify-center text-neutral-800 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition shrink-0 cursor-pointer"
-                    >
-                      <svg
-                        width="13"
-                        height="13"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                      >
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                      </svg>
-                    </button>
-                  </div>
-
-                  <div className="flex items-center justify-between mt-3.5">
-                    <div className="flex items-center bg-neutral-100 border border-neutral-300 rounded-[10px] overflow-hidden">
-                      <button
-                        onClick={() => updateQty(item.id, -1)}
-                        className="w-[34px] h-[34px] flex items-center justify-center text-neutral-500 hover:text-gray-900 hover:bg-white text-xl font-semibold transition cursor-pointer"
-                      >
-                        −
-                      </button>
-                      <div className="w-px h-4 bg-neutral-200" />
-                      <span className="min-w-[28px] text-center text-[13px] font-semibold text-gray-900">
-                        {item.quantity}
-                      </span>
-                      <div className="w-px h-4 bg-neutral-200" />
-                      <button
-                        onClick={() => updateQty(item.id, 1)}
-                        className="w-[34px] h-[34px] flex items-center justify-center text-neutral-500 hover:text-gray-900 hover:bg-white text-xl font-semibold transition cursor-pointer"
-                      >
-                        +
-                      </button>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[17px] font-bold text-gray-900">
-                        ${(item.price * item.quantity).toFixed(2)}
-                      </p>
-                      <p className="text-[11px] text-gray-400">
-                        ${item.price} / Piece
-                      </p>
-                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
           {/*--------------- RIGHT PANEL — Order Summary ------------------ */}

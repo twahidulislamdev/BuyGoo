@@ -225,6 +225,8 @@ const Shop = () => {
                   imgAlt={item.name || "Product Image"}
                   badgeText={item.badge}
                   badgeClassName={item.badge ? "bg-green-300" : ""}
+                  ram={item.ram}
+                  storage={item.storage}
                 />
               ))}
             </div>

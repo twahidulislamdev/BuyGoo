@@ -113,35 +113,9 @@ const CartSidebar = ({ isOpen, onClose }) => {
                       <p className="text-[14px] font-bold text-gray-900 leading-tight">
                         {item.title}
                       </p>
-
-                      {/* Color and Size */}
-                      {((item.colors && item.colors.length > 0) || 
-                        (item.sizes && item.sizes.length > 0)) && (
-                        <div className="flex flex-wrap items-center gap-2 mt-1.5 text-[12px] font-medium text-gray-500">
-                          {item.colors && item.colors.length > 0 && (
-                            <div className="flex items-center gap-1.5 bg-gray-100 px-2 py-0.5 rounded-md text-gray-600">
-                              {item.colors[0]?.hex && (
-                                <span 
-                                  className="w-2.5 h-2.5 rounded-full shadow-sm border border-black/10" 
-                                  style={{ backgroundColor: item.colors[0].hex }}
-                                ></span>
-                              )}
-                              <span>{item.colors[0]?.name || "Color"}</span>
-                            </div>
-                          )}
-                          {item.sizes && item.sizes.length > 0 && (
-                            <span className="bg-gray-100 px-2 py-0.5 rounded-md text-gray-600">
-                              {item.sizes[0]?.name || item.sizes[0]}
-                            </span>
-                          )}
-                        </div>
-                      )}
-
-                      {item.variant && !item.colors && !item.sizes && (
-                        <p className="text-[12px] text-gray-400 mt-1">
-                          {item.variant}
-                        </p>
-                      )}
+                      <p className="text-[12px] text-gray-400 mt-1">
+                        {item.ram && item.storage ? `${item.ram} / ${item.storage}` : (item.ram || item.storage)}
+                      </p>
                     </div>
                     <button
                       onClick={() => removeProduct(item.id)}

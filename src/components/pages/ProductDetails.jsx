@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Container from "../Container";
+import { useCartStore } from "../../stores/cartStore";
 
 const images = [
   {
@@ -39,6 +40,31 @@ export default function ProductDetails() {
   const [selectedStorage, setSelectedStorage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [wishlistAdded, setWishlistAdded] = useState(false);
+
+  const { cart, addToCart } = useCartStore();
+  const productId = "Colorful Comfortable Jacket";
+  const isInCart = cart.some((item) => item.id === productId);
+
+  const handleAddToCart = () => {
+    if (isInCart) return;
+
+    const storageStr = storageOptions[selectedStorage];
+    const parts = storageStr.split("/");
+    const ramVal = parts[0] ? `${parts[0]} RAM` : "";
+    const storageVal = parts[1] || storageStr;
+
+    addToCart({
+      id: productId,
+      title: productId,
+      price: 12999,
+      ram: ramVal,
+      storage: storageVal,
+      imgSrcFirst: images[selectedImage].src,
+      imgAlt: productId,
+      colors: colorOptions[selectedColor].name,
+      quantity: quantity,
+    });
+  };
 
   const handleWishlist = () => setWishlistAdded((prev) => !prev);
 
@@ -347,7 +373,13 @@ export default function ProductDetails() {
 
               {/* Add to Cart */}
               <button
-                className={`flex-1 flex items-center justify-center bg-white gap-2 py-3.5 px-6 rounded-xl font-semibold text-sm transition-all duration-200 focus:outline-none border border-neutral-400`}
+                onClick={handleAddToCart}
+                disabled={isInCart}
+                className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-semibold text-sm transition-all duration-200 focus:outline-none border border-neutral-400 ${
+                  isInCart
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed border-gray-200"
+                    : "bg-white text-black hover:bg-black hover:text-white"
+                }`}
               >
                 <svg
                   className="w-4 h-4"
@@ -360,7 +392,7 @@ export default function ProductDetails() {
                   <line x1="3" y1="6" x2="21" y2="6" />
                   <path d="M16 10a4 4 0 0 1-8 0" />
                 </svg>
-                Add to Cart
+                {isInCart ? "Already in Cart" : "Add to Cart"}
               </button>
             </div>
             {/* Wishlist + Share */}

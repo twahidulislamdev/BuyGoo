@@ -109,6 +109,8 @@ const BestSelling = () => {
                   badgeClassName={
                     item.discountPercentage ? "bg-green-300" : "bg-neutral-200"
                   }
+                  ram={item.ram}
+                  storage={item.storage}
                 />
               </SwiperSlide>
             ))}

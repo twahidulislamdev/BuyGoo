@@ -71,6 +71,8 @@ const TrendingProducts = () => {
                   }
                   outOfStock={item.stock === 0}
                   imgSrcFirst={item.thumbnail || item.image || item.images?.[0]}
+                  ram={item.ram}
+                  storage={item.storage}
                 />
               ))}
             </div>
@@ -95,6 +97,8 @@ const TrendingProducts = () => {
                     products[5].image ||
                     products[5].images?.[0]
                   }
+                  ram={products[5].ram}
+                  storage={products[5].storage}
                 />
               )}
             </div>
@@ -122,6 +126,8 @@ const TrendingProducts = () => {
                   }
                   outOfStock={item.stock === 0}
                   imgSrcFirst={item.thumbnail || item.image || item.images?.[0]}
+                  ram={item.ram}
+                  storage={item.storage}
                 />
               ))}
             </div>
