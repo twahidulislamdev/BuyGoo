@@ -37,7 +37,7 @@ export const useCartStore = create(
     }),
     {
       name: "cart",
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => sessionStorage),
     },
   ),
 );
