@@ -7,7 +7,7 @@ import { useCartStore } from "../../stores/cartStore";
 export default function ShoppingCart() {
   const { cart, removeFromCart, updateQuantity } = useCartStore();
   const items = cart.length > 0 ? cart : [];
-  const [delivery, setDelivery] = useState("local");
+  const [delivery, setDelivery] = useState("store");
   const [promo, setPromo] = useState("");
 
   const updateQty = (id, delta) => {
@@ -21,18 +21,17 @@ export default function ShoppingCart() {
       }
     }
   };
-
+  // Remove items
   const removeItem = (id) => {
     removeFromCart({ id });
   };
-
+  // Subtotal
   const subtotal = items.reduce(
     (sum, i) => sum + i.price * (i.quantity || 1),
     0,
   );
-  const shipping = delivery === "local" ? 5 : 20;
-  const tax = parseFloat((subtotal * 0.03).toFixed(2));
-  const total = (subtotal + shipping + tax).toFixed(2);
+  const shipping = delivery === "store" ? 0 : 20;
+  const total = (subtotal + shipping).toFixed(2);
 
   return (
     <div className="bg-white text-black font-sans p-2 flex items-start justify-center">
@@ -165,11 +164,17 @@ export default function ShoppingCart() {
                         </button>
                       </div>
                       <div className="text-right">
-                        <p className="text-[17px] font-bold text-gray-900">
-                          ${(item.price * (item.quantity || 1)).toFixed(2)}
+                        <p className="text-xl font-bold text-black">
+                          <span className="text-lg font-extrabold text-black">
+                            ৳
+                          </span>{" "}
+                          {(item.price * (item.quantity || 1)).toFixed(2)}
                         </p>
-                        <p className="text-[11px] text-gray-400">
-                          ${item.price} / Piece
+                        <p className="text-xs text-black">
+                          <span className="text-lg font-bold text-black">
+                            ৳
+                          </span>{" "}
+                          {item.price} / Piece
                         </p>
                       </div>
                     </div>
@@ -186,17 +191,23 @@ export default function ShoppingCart() {
 
               {/* Price Breakdown */}
               <div className="flex flex-col gap-2 text-sm text-black">
-                <div className="flex justify-between text-balck text-base font-medium">
+                <div className="flex justify-between text-black text-base font-medium">
                   <span>Subtotal</span>
-                  <span className="text-black">${subtotal.toFixed(2)}</span>
+                  <span className="text-black">
+                    <span className="text-base font-extrabold text-black">
+                      ৳
+                    </span>
+                    {subtotal.toFixed(2)}
+                  </span>
                 </div>
                 <div className="flex justify-between text-black text-base font-medium">
                   <span>Shipping</span>
-                  <span className="text-black">${shipping.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-black text-base font-medium">
-                  <span>Tax (3%)</span>
-                  <span className="text-black">${tax}</span>
+                  <span className="text-black">
+                    <span className="text-base font-extrabold text-black">
+                      ৳
+                    </span>{" "}
+                    {shipping.toFixed(2)}
+                  </span>
                 </div>
               </div>
 
@@ -204,7 +215,10 @@ export default function ShoppingCart() {
 
               <div className="flex justify-between font-bold text-base text-black">
                 <span>Total</span>
-                <span>${total}</span>
+                <span className="text-lg font-bold text-black">
+                  <span className="text-base font-extrabold text-black">৳</span>{" "}
+                  {total}
+                </span>
               </div>
 
               {/* Delivery Method */}
@@ -216,33 +230,35 @@ export default function ShoppingCart() {
                 <div className="flex flex-col gap-2">
                   {[
                     {
-                      id: "local",
+                      id: "store",
                       icon: "🏪",
-                      label: "Local Pickup",
+                      label: "Store Pickup",
                       sub: "Ready in 2–3 Days",
-                      price: "$5",
+                      price: "Free",
+                      isFree: true,
                     },
                     {
                       id: "home",
                       icon: "🚚",
                       label: "Home Delivery",
                       sub: "Arrives in 24 Hours",
-                      price: "$20",
+                      price: "20",
+                      isFree: false,
                     },
                   ].map((opt) => (
                     <button
                       key={opt.id}
                       onClick={() => setDelivery(opt.id)}
                       aria-pressed={delivery === opt.id}
-                      className={`flex items-center justify-between p-3 rounded-[14px] transition text-left w-full border cursor-pointer ${
+                      className={`flex items-center justify-between px-4 py-3.5 rounded-[14px] transition text-left w-full border cursor-pointer ${
                         delivery === opt.id
                           ? "bg-black text-white border-gray-900 transition duration-200"
                           : "border-gray-200 bg-white text-black hover:border-gray-300 hover:bg-gray-50"
                       }`}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3.5">
                         <div
-                          className={`w-[38px] h-[38px] rounded-[10px] flex items-center justify-center text-xl transition ${
+                          className={`w-[44px] h-[44px] rounded-[12px] flex items-center justify-center text-2xl transition ${
                             delivery === opt.id
                               ? "bg-white/20 text-white"
                               : "bg-gray-100 text-black"
@@ -253,7 +269,7 @@ export default function ShoppingCart() {
 
                         <div>
                           <p
-                            className={`text-[13px] font-semibold ${
+                            className={`text-[14px] font-semibold leading-tight ${
                               delivery === opt.id
                                 ? "text-white"
                                 : "text-gray-900"
@@ -261,12 +277,11 @@ export default function ShoppingCart() {
                           >
                             {opt.label}
                           </p>
-
                           <p
-                            className={`text-[11px] ${
+                            className={`text-[12px] mt-0.5 ${
                               delivery === opt.id
-                                ? "text-gray-200"
-                                : "text-gray-600"
+                                ? "text-gray-300"
+                                : "text-gray-500"
                             }`}
                           >
                             {opt.sub}
@@ -274,24 +289,45 @@ export default function ShoppingCart() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2.5">
-                        <span
-                          className={`text-[14px] font-bold ${
-                            delivery === opt.id ? "text-white" : "text-gray-900"
-                          }`}
-                        >
-                          {opt.price}
-                        </span>
+                      <div className="flex items-center gap-3">
+                        {/* Price badge */}
+                        {opt.isFree ? (
+                          <span
+                            className={`text-[13px] font-bold px-2.5 py-1 rounded-lg px-3 py-1 ${
+                              delivery === opt.id
+                                ? "bg-neutral-300 text-black"
+                                : "bg-neutral-100 text-black border border-neutral-300 rounded-lg"
+                            }`}
+                          >
+                            Free
+                          </span>
+                        ) : (
+                          <span
+                            className={`text-[15px] font-bold bg-neutral-100 text-black border border-neutral-300 px-5 py-1 rounded-lg ${
+                              delivery === opt.id
+                                ? "bg-neutral-100 text-black border border-neutral-300 px-3 rounded-lg"
+                                : "text-gray-900 text-black"
+                            }`}
+                          >
+                            <span className="text-sm font-medium mr-0.5">
+                              <span className="text-base font-extrabold text-black">
+                                ৳
+                              </span>
+                            </span>
+                            {opt.price}
+                          </span>
+                        )}
 
+                        {/* Radio dot */}
                         <div
-                          className={`w-[18px] h-[18px] rounded-full border-[1.5px] flex items-center justify-center transition ${
+                          className={`w-[20px] h-[20px] rounded-full border-2 flex items-center justify-center transition ${
                             delivery === opt.id
                               ? "border-white"
                               : "border-gray-300"
                           }`}
                         >
                           <div
-                            className={`w-[9px] h-[9px] rounded-full transition-all duration-150 ${
+                            className={`w-[10px] h-[10px] rounded-full transition-all duration-150 ${
                               delivery === opt.id
                                 ? "opacity-100 scale-100 bg-white"
                                 : "opacity-0 scale-50 bg-gray-900"
@@ -337,6 +373,7 @@ export default function ShoppingCart() {
               {/* ── Checkout Button ── */}
               <Link
                 to="/checkout"
+                state={{ items, subtotal, shipping, total, delivery, promo }}
                 className="w-full bg-black text-white text-lg font-semibold py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 hover:bg-neutral-800 cursor-pointer active:scale-[0.99] shadow-sm"
               >
                 <span>Proceed to checkout</span>

@@ -5,22 +5,33 @@ export const useCartStore = create(
   persist(
     (set) => ({
       cart: [],
+
+      // Add Product In To Cart
       addToCart: (product) =>
         set((state) => ({
-          cart: [...state.cart, { ...product, quantity: product.quantity || 1 }],
+          cart: [
+            ...state.cart,
+            { ...product, quantity: product.quantity || 1 },
+          ],
         })),
-      removeFromCart: (product) =>
-        set((state) => ({
-          cart: state.cart.filter((item) => item.id !== product.id),
-        })),
+
+      // Update Quantity
       updateQuantity: (product, quantity) =>
         set((state) => ({
           cart: state.cart.map((item) =>
             item.id === product.id ? { ...item, quantity } : item,
           ),
         })),
-      clearCart: () =>
+
+      // Remove Product From Cart
+      removeFromCart: (product) =>
         set((state) => ({
+          cart: state.cart.filter((item) => item.id !== product.id),
+        })),
+
+      // Clear Cart
+      clearCart: () =>
+        set(() => ({
           cart: [],
         })),
     }),

@@ -1,32 +1,23 @@
 import React, { useState } from "react";
 import Container from "../Container";
 import { CreditCard, Landmark, Banknote, Wallet } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { useCartStore } from "../../stores/cartStore";
 
-const products = [
-  {
-    id: 1,
-    image: "../assets/images/checkout/product-1.png",
-    name: "Calvin Shorts",
-    qty: 1,
-    price: 62,
-  },
-  {
-    id: 2,
-    image: "../assets/images/checkout/product-2.png",
-    name: "Cableknit Shawl",
-    qty: 1,
-    price: 99,
-  },
-  {
-    id: 3,
-    image: "../assets/images/checkout/product-3.png",
-    name: "Kirby T-Shirt",
-    qty: 1,
-    price: 17,
-  },
-];
-
+// Payment Options Data
 const paymentOptions = [
+  {
+    id: "onlinePayment",
+    label: "Online Payment",
+    desc: "You will be redirected to online payment gateway to complete your payment securely.",
+    icon: CreditCard,
+  },
+  {
+    id: "cod",
+    label: "Cash on delivery",
+    desc: "Pay with cash when your order arrives at your door.",
+    icon: Banknote,
+  },
   {
     id: "bank",
     label: "Direct bank transfer",
@@ -39,27 +30,24 @@ const paymentOptions = [
     desc: "Send a check to our mailing address. Allow 5–7 days for processing.",
     icon: Wallet,
   },
-  {
-    id: "cod",
-    label: "Cash on delivery",
-    desc: "Pay with cash when your order arrives at your door.",
-    icon: Banknote,
-  },
-  {
-    id: "paypal",
-    label: "PayPal",
-    desc: "You will be redirected to PayPal to complete your payment securely.",
-    icon: CreditCard,
-  },
 ];
 
 const CheckOut = () => {
-  const [payment, setPayment] = useState("bank");
+  const location = useLocation();
+  const { cart } = useCartStore();
+
+  const passedState = location.state || {};
+  const products = passedState.items || cart || [];
+
+  const [payment, setPayment] = useState("onlinePayment");
   const [saveInfo, setSaveInfo] = useState(false);
 
-  const subtotal = products.reduce((s, p) => s + p.price * p.qty, 0);
-  const vat = 19;
-  const total = subtotal + vat;
+  //
+  const subtotal =
+    passedState.subtotal ??
+    products.reduce((s, p) => s + p.price * (p.quantity || 1), 0);
+  const shipping = passedState.shipping ?? 0;
+  const total = passedState.total ?? (subtotal + shipping).toFixed(2);
 
   return (
     <div className="px-3">
@@ -143,7 +131,6 @@ const CheckOut = () => {
 
           {/* ── RIGHT PANEL (improved) ── */}
           <div className="w-full lg:w-[40%] flex flex-col gap-4">
-
             {/* Order Summary Card */}
             <div className="bg-white rounded-2xl border border-[#e8e6e0] overflow-hidden">
               {/* Card header */}
@@ -157,23 +144,23 @@ const CheckOut = () => {
               <div className="px-5 py-4 flex flex-col gap-3">
                 {products.map((p) => (
                   <div key={p.id} className="flex items-center gap-3">
-                    <div className="w-[52px] h-[56px] rounded-xl overflow-hidden bg-gray-50 flex-shrink-0 border border-[#f0ede5]">
+                    <div className="w-[85px] h-[56px] rounded-xl overflow-hidden bg-gray-50 flex-shrink-0 border border-[#f0ede5]">
                       <img
-                        src={p.image}
-                        alt={p.name}
-                        className="w-full h-full object-cover"
+                        src={p.image || p.imgSrcFirst}
+                        alt={p.name || p.title}
+                        className="w-full h-full p-1 object-cover"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-medium text-gray-900 truncate">
-                        {p.name}
+                        {p.name || p.title}
                       </p>
                       <p className="text-[11px] text-gray-400 mt-0.5">
-                        Qty: {p.qty}
+                        Qty: {p.quantity || 1}
                       </p>
                     </div>
                     <p className="text-[13px] font-semibold text-gray-900 whitespace-nowrap">
-                      ${p.price}.00
+                      ৳{p.price}
                     </p>
                   </div>
                 ))}
@@ -185,34 +172,46 @@ const CheckOut = () => {
                 <div className="flex flex-col gap-2">
                   <div className="flex justify-between items-center">
                     <span className="text-[13px] text-gray-500">Subtotal</span>
-                    <span className="text-[13px] text-gray-800">${subtotal}.00</span>
+                    <span className="text-[13px] text-gray-800">
+                      ৳{Number(subtotal).toFixed(2)}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-[13px] text-gray-500">Shipping</span>
-                    <span className="text-[13px] font-medium text-emerald-500">Free</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[13px] text-gray-500">VAT</span>
-                    <span className="text-[13px] text-gray-800">${vat}.00</span>
+                    <span
+                      className={`text-[13px] ${shipping === 0 ? "font-medium text-emerald-500" : "text-gray-800"}`}
+                    >
+                      {shipping === 0
+                        ? "Free"
+                        : `৳${Number(shipping).toFixed(2)}`}
+                    </span>
                   </div>
                   <div className="h-px bg-[#f0ede5] my-1" />
                   <div className="flex justify-between items-center">
-                    <span className="text-[15px] font-semibold text-gray-900">Total</span>
-                    <span className="text-[17px] font-semibold text-gray-900">${total}.00</span>
+                    <span className="text-[15px] font-semibold text-gray-900">
+                      Total
+                    </span>
+                    <span className="text-[17px] font-semibold text-gray-900">
+                      ৳{total}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Payment Method Card */}
-            <div className="bg-white rounded-2xl border border-[#e8e6e0] overflow-hidden">
-              <div className="px-5 py-4 border-b border-[#f0ede5]">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400">
+            <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden shadow-sm">
+              {/* Card header */}
+              <div className="px-5 py-4 border-b border-neutral-100 bg-neutral-50/50 flex items-center justify-between">
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-neutral-400">
                   Payment Method
                 </p>
+                <span className="text-[10px] bg-neutral-900 text-white font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  Secure Checkout
+                </span>
               </div>
 
-              <div className="px-4 py-3 flex flex-col gap-2">
+              <div className="px-4 py-4 flex flex-col gap-3">
                 {paymentOptions.map((opt) => {
                   const Icon = opt.icon;
                   const isActive = payment === opt.id;
@@ -220,45 +219,70 @@ const CheckOut = () => {
                     <label
                       key={opt.id}
                       onClick={() => setPayment(opt.id)}
-                      className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all duration-150 ${
+                      className={`relative flex items-start gap-4 p-4 rounded-xl border cursor-pointer transition-all duration-300 ease-out transform select-none ${
                         isActive
-                          ? "border-gray-900 bg-gray-50"
-                          : "border-[#e8e6e0] hover:border-gray-300 hover:bg-gray-50/60"
+                          ? "border-black bg-neutral-50 shadow-sm translate-x-0.5"
+                          : "border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/40 hover:-translate-y-0.5"
                       }`}
                     >
                       {/* Icon tile */}
                       <div
-                        className={`w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0 transition-colors ${
-                          isActive ? "bg-gray-900" : "bg-gray-100"
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                          isActive
+                            ? "bg-black text-white scale-110 shadow-sm"
+                            : "bg-neutral-100 text-neutral-500"
                         }`}
                       >
                         <Icon
-                          size={17}
-                          className={isActive ? "text-white" : "text-gray-500"}
+                          size={18}
+                          className="transition-transform duration-300"
                         />
                       </div>
 
                       {/* Text */}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-medium text-gray-900 leading-tight">
-                          {opt.label}
-                        </p>
-                        <p className="text-[11px] text-gray-400 mt-0.5 leading-relaxed truncate">
+                      <div className="flex-1 min-w-0 pr-2">
+                        <div className="flex items-center gap-2">
+                          <p
+                            className={`text-[13.5px] font-bold transition-colors duration-300 ${
+                              isActive
+                                ? "text-black font-extrabold"
+                                : "text-neutral-700"
+                            }`}
+                          >
+                            {opt.label}
+                          </p>
+                          {opt.id === "onlinePayment" && (
+                            <span className="inline-block text-[9px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md border border-emerald-100 uppercase tracking-wide">
+                              Recommended
+                            </span>
+                          )}
+                        </div>
+                        <p
+                          className={`text-[11px] mt-1 leading-relaxed transition-colors duration-300 ${
+                            isActive ? "text-neutral-600" : "text-neutral-400"
+                          }`}
+                        >
                           {opt.desc}
                         </p>
                       </div>
 
                       {/* Custom radio dot */}
-                      <div
-                        className={`w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                          isActive
-                            ? "border-gray-900"
-                            : "border-gray-300"
-                        }`}
-                      >
-                        {isActive && (
-                          <div className="w-2 h-2 rounded-full bg-gray-900" />
-                        )}
+                      <div className="flex items-center self-center h-full">
+                        <div
+                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                            isActive
+                              ? "border-black bg-black scale-110 shadow-sm"
+                              : "border-neutral-300 bg-white"
+                          }`}
+                        >
+                          <div
+                            className={`w-2 h-2 rounded-full bg-white transition-all duration-300 ${
+                              isActive
+                                ? "opacity-100 scale-100"
+                                : "opacity-0 scale-50"
+                            }`}
+                          />
+                        </div>
                       </div>
                     </label>
                   );
@@ -271,7 +295,7 @@ const CheckOut = () => {
               type="button"
               className="w-full bg-[#111] hover:bg-[#2a2a2a] active:scale-[0.99] text-white text-[13px] font-semibold uppercase tracking-wider py-4 rounded-[14px] transition-all duration-150"
             >
-              Place Order 
+              Place Order
             </button>
 
             <p className="text-[11px] text-gray-400 text-center leading-relaxed">
