@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Container from "../Container";
 import { CreditCard, Landmark, Banknote, Wallet } from "lucide-react";
 import { useLocation } from "react-router-dom";
-import { useCartStore } from "../../stores/cartStore";
+import { useCartStore, useDeliveryStore } from "../../stores/cartStore";
 
 // Payment Options Data
 const paymentOptions = [
@@ -35,18 +35,24 @@ const paymentOptions = [
 const CheckOut = () => {
   const location = useLocation();
   const { cart } = useCartStore();
+  const { deliveryMethod } = useDeliveryStore();
 
+  // Passed Data from Add to Cart Page
   const passedState = location.state || {};
   const products = passedState.items || cart || [];
 
+  // Payment Method State
   const [payment, setPayment] = useState("onlinePayment");
   const [saveInfo, setSaveInfo] = useState(false);
 
-  //
+  // Calculate Subtotal Price
   const subtotal =
     passedState.subtotal ??
     products.reduce((s, p) => s + p.price * (p.quantity || 1), 0);
-  const shipping = passedState.shipping ?? 0;
+
+  // Add Shipping Price
+  const shipping = passedState.shipping ?? (deliveryMethod === "home" ? 80 : 0);
+  // Calculate Total Price
   const total = passedState.total ?? (subtotal + shipping).toFixed(2);
 
   return (
@@ -83,28 +89,6 @@ const CheckOut = () => {
               </Field>
             </div>
 
-            <Field label="Company Name" optional>
-              <input type="text" placeholder="Acme Inc." />
-            </Field>
-
-            <Field label="Street Address" required>
-              <input type="text" placeholder="123 Main Street" />
-            </Field>
-
-            <Field label="Apartment, floor, etc." optional>
-              <input type="text" placeholder="Apt 4B" />
-            </Field>
-
-            {/* City / Zip */}
-            <div className="flex gap-3">
-              <Field label="Town / City" required>
-                <input type="text" placeholder="New York" />
-              </Field>
-              <Field label="Zip Code" required>
-                <input type="text" placeholder="10001" />
-              </Field>
-            </div>
-
             {/* Phone / Email */}
             <div className="flex gap-3">
               <Field label="Phone Number" required>
@@ -114,6 +98,19 @@ const CheckOut = () => {
                 <input type="email" placeholder="john@example.com" />
               </Field>
             </div>
+
+            {/* Address */}
+            <Field label="Address" required>
+              <input type="text" placeholder="123 Main Street, City, Country" />
+            </Field>
+
+            {/* Special Note */}
+            <Field label="Special Note" optional>
+              <textarea
+                rows={3}
+                placeholder="Notes about your order, e.g. special notes for delivery."
+              />
+            </Field>
 
             {/* Save info */}
             <label className="flex items-center gap-2.5 mt-1 cursor-pointer select-none">
@@ -156,7 +153,7 @@ const CheckOut = () => {
                         {p.name || p.title}
                       </p>
                       <p className="text-[11px] text-gray-400 mt-0.5">
-                        Qty: {p.quantity || 1}
+                        Quantity: {p.quantity || 1}
                       </p>
                     </div>
                     <p className="text-[13px] font-semibold text-gray-900 whitespace-nowrap">

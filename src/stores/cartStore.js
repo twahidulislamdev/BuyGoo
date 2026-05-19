@@ -37,7 +37,14 @@ export const useCartStore = create(
     }),
     {
       name: "cart",
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
     },
   ),
 );
+
+// Delivery Method
+export const useDeliveryStore = create((set) => ({
+  deliveryMethod: "store",
+  setDeliveryMethod: (method) => set({ deliveryMethod: method }),
+}));
+

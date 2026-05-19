@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
-import { HiOutlineHeart } from "react-icons/hi2";
+import { HiOutlineHeart, HiHeart } from "react-icons/hi2";
 import { useCartStore } from "../stores/cartStore";
 
 const ProductCard = ({
@@ -20,6 +21,7 @@ const ProductCard = ({
   badgeClassName,
 }) => {
   const { cart, addToCart } = useCartStore();
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   const colorVal = Array.isArray(colors)
     ? colors[0]?.name || colors[0]
@@ -87,8 +89,15 @@ const ProductCard = ({
 
       {/* Wishlist Icon */}
       <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        <button className="w-8 h-8 rounded-full bg-gray-500 hover:bg-red-50 flex items-center justify-center transition-colors duration-200">
-          <HiOutlineHeart className="text-gray-500 hover:text-red-500 text-lg transition-colors duration-200" />
+        <button
+          onClick={() => setIsWishlisted(!isWishlisted)}
+          className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200 cursor-pointer ${
+            isWishlisted
+              ? "bg-rose-500 text-white"
+              : "bg-white border border-neutral-300 text-neutral-500 hover:bg-rose-50 hover:text-rose-500"
+          }`}
+        >
+          {isWishlisted ? <HiHeart className="text-lg" /> : <HiOutlineHeart className="text-lg" />}
         </button>
       </div>
 
@@ -139,18 +148,25 @@ const ProductCard = ({
 
         {/* Actions */}
         <div className="flex items-center gap-2 mt-auto">
-          <Link
-            to={"/productdetails"}
-            onClick={handleProductDetails}
-            className={`flex-1 flex items-center justify-center rounded-full border border-neutral-500 font-medium text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all duration-250 ${isSmall ? "px-2 lg:px-5 py-1 lg:py-2  text-sm" : "text-sm lg:text-base px-2 lg:px-5 py-1.5 lg:py-2"}`}
-          >
-            Shop Now
-          </Link>
           <button
             onClick={handleAddToCart}
-            className={`flex items-center justify-center rounded-full border border-neutral-500 hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-all duration-250 ${isInCart ? "bg-[#1a1a1a] text-white border-[#1a1a1a]" : "text-[#1a1a1a]"} cursor-pointer ${isSmall ? "w-9 h-9" : " w-8 h-8 lg:w-10 lg:h-10"}`}
+            className={`flex-1 flex items-center justify-center rounded-full border border-neutral-500 font-medium transition-all duration-250 cursor-pointer ${
+              isInCart
+                ? "bg-[#1a1a1a] text-white border-[#1a1a1a]"
+                : "text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white"
+            } ${isSmall ? "px-2 lg:px-5 py-1 lg:py-2 text-sm" : "text-sm lg:text-base px-2 lg:px-5 py-1.5 lg:py-2"}`}
           >
-            <ShoppingCart sizes={15} />
+            {isInCart ? "In Cart" : "Add to Cart"}
+          </button>
+          <button
+            onClick={() => setIsWishlisted(!isWishlisted)}
+            className={`flex items-center justify-center rounded-full border border-neutral-500 hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-all duration-250 ${
+              isWishlisted
+                ? "bg-rose-500 text-white border-rose-500 hover:bg-rose-600 hover:border-rose-600"
+                : "text-[#1a1a1a]"
+            } cursor-pointer ${isSmall ? "w-9 h-9" : "w-8 h-8 lg:w-10 lg:h-10"}`}
+          >
+            {isWishlisted ? <HiHeart size={18} /> : <HiOutlineHeart size={18} />}
           </button>
         </div>
       </div>

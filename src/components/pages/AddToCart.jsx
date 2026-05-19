@@ -2,12 +2,13 @@ import { useState } from "react";
 import Container from "../Container";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useCartStore } from "../../stores/cartStore";
+import { useCartStore, useDeliveryStore } from "../../stores/cartStore";
 
 export default function ShoppingCart() {
   const { cart, removeFromCart, updateQuantity } = useCartStore();
+  const { deliveryMethod, setDeliveryMethod } = useDeliveryStore();
   const items = cart.length > 0 ? cart : [];
-  const [delivery, setDelivery] = useState("store");
+  const delivery = deliveryMethod || "store";
   const [promo, setPromo] = useState("");
 
   // Update Quantity
@@ -33,7 +34,7 @@ export default function ShoppingCart() {
   );
 
   // Delivery
-  const shipping = delivery === "store" ? 0 : 20;
+  const shipping = delivery === "store" ? 0 : 120;
   // Total
   const total = (subtotal + shipping).toFixed(2);
 
@@ -158,7 +159,7 @@ export default function ShoppingCart() {
                           −
                         </button>
                         <div className="w-px h-4 bg-neutral-200" />
-                        <span className="min-w-[28px] text-center text-[13px] font-semibold text-gray-900">
+                        <span className="min-w-[28px] text-center text-[13px] font-semibold text-gray-900"> 
                           {item.quantity || 1}
                         </span>
                         <div className="w-px h-4 bg-neutral-200" />
@@ -242,7 +243,7 @@ export default function ShoppingCart() {
                       id: "store",
                       icon: "🏪",
                       label: "Store Pickup",
-                      sub: "Ready in 2–3 Days",
+                      sub: "Instant Collection",
                       price: "Free",
                       isFree: true,
                     },
@@ -251,13 +252,13 @@ export default function ShoppingCart() {
                       icon: "🚚",
                       label: "Home Delivery",
                       sub: "Arrives in 24 Hours",
-                      price: "20",
+                      price: "120",
                       isFree: false,
                     },
                   ].map((option) => (
                     <button
                       key={option.id}
-                      onClick={() => setDelivery(option.id)}
+                      onClick={() => setDeliveryMethod(option.id)}
                       aria-pressed={delivery === option.id}
                       className={`flex items-center justify-between px-4 py-3.5 rounded-[14px] transition text-left w-full border cursor-pointer ${
                         delivery === option.id
@@ -382,6 +383,7 @@ export default function ShoppingCart() {
               {/* ── Checkout Button ── */}
               <Link
                 to="/checkout"
+                state={{ items, subtotal, shipping, total }}
                 className="w-full bg-black text-white text-lg font-semibold py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 hover:bg-neutral-800 cursor-pointer active:scale-[0.99] shadow-sm"
               >
                 <span>Proceed to checkout</span>
