@@ -10,6 +10,7 @@ export default function ShoppingCart() {
   const [delivery, setDelivery] = useState("store");
   const [promo, setPromo] = useState("");
 
+  // Update Quantity
   const updateQty = (id, delta) => {
     const item = items.find((i) => i.id === id);
     if (item) {
@@ -30,7 +31,10 @@ export default function ShoppingCart() {
     (sum, i) => sum + i.price * (i.quantity || 1),
     0,
   );
+
+  // Delivery
   const shipping = delivery === "store" ? 0 : 20;
+  // Total
   const total = (subtotal + shipping).toFixed(2);
 
   return (
@@ -123,6 +127,7 @@ export default function ShoppingCart() {
                           )}
                         </div>
                       </div>
+
                       {/* Delete Cart Item */}
                       <button
                         onClick={() => removeItem(item.id)}
@@ -143,6 +148,7 @@ export default function ShoppingCart() {
                       </button>
                     </div>
 
+                    {/* Update Quantity */}
                     <div className="flex items-center justify-between mt-3.5">
                       <div className="flex items-center bg-neutral-100 border border-neutral-300 rounded-[10px] overflow-hidden">
                         <button
@@ -189,7 +195,7 @@ export default function ShoppingCart() {
             <div className=" rounded-2xl px-5 py-1 flex flex-col gap-3.5">
               <h2 className="text-2xl font-bold text-black">Order Summary</h2>
 
-              {/* Price Breakdown */}
+              {/* Subtotal */}
               <div className="flex flex-col gap-2 text-sm text-black">
                 <div className="flex justify-between text-black text-base font-medium">
                   <span>Subtotal</span>
@@ -211,8 +217,10 @@ export default function ShoppingCart() {
                 </div>
               </div>
 
+              {/* Divider */}
               <div className="border-t border-[#3a3a3a]" />
 
+              {/* Total Product Price */}
               <div className="flex justify-between font-bold text-base text-black">
                 <span>Total</span>
                 <span className="text-lg font-bold text-black">
@@ -227,6 +235,7 @@ export default function ShoppingCart() {
                   Delivery Method
                 </p>
 
+                {/* Delivery Method Options */}
                 <div className="flex flex-col gap-2">
                   {[
                     {
@@ -245,13 +254,13 @@ export default function ShoppingCart() {
                       price: "20",
                       isFree: false,
                     },
-                  ].map((opt) => (
+                  ].map((option) => (
                     <button
-                      key={opt.id}
-                      onClick={() => setDelivery(opt.id)}
-                      aria-pressed={delivery === opt.id}
+                      key={option.id}
+                      onClick={() => setDelivery(option.id)}
+                      aria-pressed={delivery === option.id}
                       className={`flex items-center justify-between px-4 py-3.5 rounded-[14px] transition text-left w-full border cursor-pointer ${
-                        delivery === opt.id
+                        delivery === option.id
                           ? "bg-black text-white border-gray-900 transition duration-200"
                           : "border-gray-200 bg-white text-black hover:border-gray-300 hover:bg-gray-50"
                       }`}
@@ -259,42 +268,42 @@ export default function ShoppingCart() {
                       <div className="flex items-center gap-3.5">
                         <div
                           className={`w-[44px] h-[44px] rounded-[12px] flex items-center justify-center text-2xl transition ${
-                            delivery === opt.id
+                            delivery === option.id
                               ? "bg-white/20 text-white"
                               : "bg-gray-100 text-black"
                           }`}
                         >
-                          {opt.icon}
+                          {option.icon}
                         </div>
 
                         <div>
                           <p
                             className={`text-[14px] font-semibold leading-tight ${
-                              delivery === opt.id
+                              delivery === option.id
                                 ? "text-white"
                                 : "text-gray-900"
                             }`}
                           >
-                            {opt.label}
+                            {option.label}
                           </p>
                           <p
                             className={`text-[12px] mt-0.5 ${
-                              delivery === opt.id
+                              delivery === option.id
                                 ? "text-gray-300"
                                 : "text-gray-500"
                             }`}
                           >
-                            {opt.sub}
+                            {option.sub}
                           </p>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-3">
                         {/* Price badge */}
-                        {opt.isFree ? (
+                        {option.isFree ? (
                           <span
                             className={`text-[13px] font-bold px-2.5 py-1 rounded-lg px-3 py-1 ${
-                              delivery === opt.id
+                              delivery === option.id
                                 ? "bg-neutral-300 text-black"
                                 : "bg-neutral-100 text-black border border-neutral-300 rounded-lg"
                             }`}
@@ -304,7 +313,7 @@ export default function ShoppingCart() {
                         ) : (
                           <span
                             className={`text-[15px] font-bold bg-neutral-100 text-black border border-neutral-300 px-5 py-1 rounded-lg ${
-                              delivery === opt.id
+                              delivery === option.id
                                 ? "bg-neutral-100 text-black border border-neutral-300 px-3 rounded-lg"
                                 : "text-gray-900 text-black"
                             }`}
@@ -314,21 +323,21 @@ export default function ShoppingCart() {
                                 ৳
                               </span>
                             </span>
-                            {opt.price}
+                            {option.price}
                           </span>
                         )}
 
                         {/* Radio dot */}
                         <div
                           className={`w-[20px] h-[20px] rounded-full border-2 flex items-center justify-center transition ${
-                            delivery === opt.id
+                            delivery === option.id
                               ? "border-white"
                               : "border-gray-300"
                           }`}
                         >
                           <div
                             className={`w-[10px] h-[10px] rounded-full transition-all duration-150 ${
-                              delivery === opt.id
+                              delivery === option.id
                                 ? "opacity-100 scale-100 bg-white"
                                 : "opacity-0 scale-50 bg-gray-900"
                             }`}
@@ -373,7 +382,6 @@ export default function ShoppingCart() {
               {/* ── Checkout Button ── */}
               <Link
                 to="/checkout"
-                state={{ items, subtotal, shipping, total, delivery, promo }}
                 className="w-full bg-black text-white text-lg font-semibold py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 hover:bg-neutral-800 cursor-pointer active:scale-[0.99] shadow-sm"
               >
                 <span>Proceed to checkout</span>
