@@ -38,7 +38,7 @@ const TrendingProducts = () => {
           {/* Heading + Navigation */}
           <div className="w-full flex items-center justify-between">
             <h3 className="text-xl md:text-2xl lg:text-4xl font-semibold px-2 lg:px-0">
-              Trending <span className="text-mainColor">Products</span>
+              Top Trending <span className="text-mainColor">Products</span>
             </h3>
 
             <button className="px-5 h-11 border border-black text-sm font-medium text-black rounded-xl transition-all duration-300">

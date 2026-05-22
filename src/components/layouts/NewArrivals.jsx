@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import ProductCard from "../ProductCard";
 
-const OurProducts = () => {
+const NewArrivals = () => {
   const [myProducts, setMyProducts] = useState([]);
   const [showAll, setShowAll] = useState(false);
 
@@ -30,15 +30,15 @@ const OurProducts = () => {
       <Container>
         {/* Top Label */}
         <div className="w-full flex space-x-2 pb-3 px-2 lg:px-0">
-          <div className="w-3 h-6 sm:w-4 sm:h-7 bg-mainColor rounded-sm"></div>
+          <div className="w-3 h-5 sm:w-4 sm:h-7 bg-mainColor rounded-sm"></div>
           <h6 className="text-sm sm:text-base text-mainColor font-semibold">
-            Our Products
+            Collection of the Week
           </h6>
         </div>
 
         {/* Section Title */}
         <h3 className="text-xl md:text-2xl lg:text-4xl font-semibold px-2 lg:px-0">
-          Explore Our <span className="text-mainColor">Products</span>
+          Explore Our <span className="text-mainColor">New Arrivals</span>
         </h3>
 
         {/* Products grid retrieved from API */}
@@ -82,4 +82,4 @@ const OurProducts = () => {
   );
 };
 
-export default OurProducts;
+export default NewArrivals;

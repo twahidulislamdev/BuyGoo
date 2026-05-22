@@ -6,18 +6,18 @@ import LatestOffer from "../layouts/LatestOffer";
 import Policy from "../layouts/Policy";
 import TrendingProducts from "../layouts/TrendingProducts";
 import Ads from "../layouts/Ads";
-import OurProducts from "../layouts/OurProducts";
+import OurProducts from "../layouts/NewArrivals";
 
 const Home = () => {
   return (
     <>
       <Banner />
       <Categories />
-      <BestSelling />
-      <LatestOffer />
-      <TrendingProducts />
-      <Ads />
       <OurProducts />
+      <LatestOffer />
+      <BestSelling />
+      <Ads />
+      <TrendingProducts />
       <Policy />
     </>
   );
