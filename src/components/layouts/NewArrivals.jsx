@@ -17,8 +17,8 @@ const NewArrivals = () => {
         );
         const allProducts = res.data.products || res.data;
         // Filter products by "New Arrivals" tag
-        const filteredProducts = allProducts.filter((product) =>
-          product.tags && product.tags.includes("New Arrivals")
+        const filteredProducts = allProducts.filter(
+          (product) => product.tags && product.tags.includes("New Arrivals"),
         );
         setMyProducts(filteredProducts);
       } catch (error) {

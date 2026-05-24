@@ -25,8 +25,8 @@ const BestSelling = () => {
         );
         const allProducts = res.data.products || res.data;
         // Filter products by "Best Selling" tag
-        const filteredProducts = allProducts.filter((product) =>
-          product.tags && product.tags.includes("Best Selling")
+        const filteredProducts = allProducts.filter(
+          (product) => product.tags && product.tags.includes("Best Selling"),
         );
         setProducts(filteredProducts);
       } catch (error) {

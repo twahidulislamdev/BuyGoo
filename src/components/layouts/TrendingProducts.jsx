@@ -16,8 +16,8 @@ const TrendingProducts = () => {
         );
         const allProducts = res.data.products || res.data;
         // Filter products by "Top Trending" tag
-        const filteredProducts = allProducts.filter((product) =>
-          product.tags && product.tags.includes("Top Trending")
+        const filteredProducts = allProducts.filter(
+          (product) => product.tags && product.tags.includes("Top Trending"),
         );
         setProducts(filteredProducts);
       } catch (error) {
