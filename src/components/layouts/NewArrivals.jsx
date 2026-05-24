@@ -56,7 +56,21 @@ const NewArrivals = () => {
                   imgSrcFirst={item.image}
                   imgAlt={item.name}
                   badgeText={item.badge}
-                  badgeClassName={item.badge ? "bg-green-300" : ""}
+                  badgeClassName={`${
+                    item.badge === "Hot"
+                      ? "bg-red-500 text-white"
+                      : item.badge === "New"
+                        ? "bg-green-500 text-white"
+                        : item.badge === "Limited"
+                          ? "bg-orange-500 text-white"
+                          : item.badge === "Sale"
+                            ? "bg-blue-500 text-white"
+                            : item.badge === "Trending"
+                              ? "bg-purple-500 text-white"
+                              : item.badge === "Best"
+                                ? "bg-yellow-500 text-white"
+                                : ""
+                  }`}
                   ram={item.ram}
                   storage={item.storage}
                   colors={item.colors}

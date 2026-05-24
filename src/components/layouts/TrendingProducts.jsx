@@ -66,13 +66,22 @@ const TrendingProducts = () => {
                       ? `${Math.round(item.discountPercentage)}%`
                       : item.discount
                   }
-                  tag={
-                    index === 0
-                      ? "Most Popular"
-                      : index === 2
-                        ? "Hot Product"
-                        : undefined
-                  }
+                  badgeText={item.badge}
+                  badgeClassName={`${
+                    item.badge === "Hot"
+                      ? "bg-red-500 text-white"
+                      : item.badge === "New"
+                        ? "bg-green-500 text-white"
+                        : item.badge === "Limited"
+                          ? "bg-orange-500 text-white"
+                          : item.badge === "Sale"
+                            ? "bg-blue-500 text-white"
+                            : item.badge === "Trending"
+                              ? "bg-purple-500 text-white"
+                              : item.badge === "Best"
+                                ? "bg-yellow-500 text-white"
+                                : ""
+                  }`}
                   outOfStock={item.stock === 0}
                   imgSrcFirst={item.thumbnail || item.image || item.images?.[0]}
                   ram={item.ram}
@@ -96,7 +105,22 @@ const TrendingProducts = () => {
                       ? `${Math.round(products[5].discountPercentage)}%`
                       : products[5].discount
                   }
-                  tag="Hot Product"
+                  badgeText={products[5].badge}
+                  badgeClassName={`${
+                    products[5].badge === "Hot"
+                      ? "bg-red-500 text-white"
+                      : products[5].badge === "New"
+                        ? "bg-green-500 text-white"
+                        : products[5].badge === "Limited"
+                          ? "bg-orange-500 text-white"
+                          : products[5].badge === "Sale"
+                            ? "bg-blue-500 text-white"
+                            : products[5].badge === "Trending"
+                              ? "bg-purple-500 text-white"
+                              : products[5].badge === "Best"
+                                ? "bg-yellow-500 text-white"
+                                : ""
+                  }`}
                   outOfStock={products[5].stock === 0}
                   imgSrcFirst={
                     products[5].thumbnail ||
@@ -125,13 +149,22 @@ const TrendingProducts = () => {
                       ? `${Math.round(item.discountPercentage)}%`
                       : item.discount
                   }
-                  tag={
-                    index === 0 || index === 1
-                      ? "Customers Choice"
-                      : index === 2
-                        ? "Top Selling"
-                        : undefined
-                  }
+                  badgeText={item.badge}
+                  badgeClassName={`${
+                    item.badge === "Hot"
+                      ? "bg-red-500 text-white"
+                      : item.badge === "New"
+                        ? "bg-green-500 text-white"
+                        : item.badge === "Limited"
+                          ? "bg-orange-500 text-white"
+                          : item.badge === "Sale"
+                            ? "bg-blue-500 text-white"
+                            : item.badge === "Trending"
+                              ? "bg-purple-500 text-white"
+                              : item.badge === "Best"
+                                ? "bg-yellow-500 text-white"
+                                : ""
+                  }`}
                   outOfStock={item.stock === 0}
                   imgSrcFirst={item.thumbnail || item.image || item.images?.[0]}
                   ram={item.ram}

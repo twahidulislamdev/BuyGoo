@@ -81,9 +81,17 @@ const ProductCard = ({
       {/* Badge */}
       {badgeText && (
         <div
-          className={`absolute top-3 left-3 py-1 px-3 text-xs font-semibold rounded-full z-10 ${badgeClassName}`}
+          className={`absolute top-3 left-3 z-10 transform transition-transform duration-300 hover:scale-110`}
         >
-          {badgeText}
+          <div
+            className={`${badgeClassName} py-1.5 px-3 text-xs font-bold rounded-xl shadow-lg backdrop-blur-sm border border-white border-opacity-30 uppercase tracking-wide`}
+            style={{
+              textShadow: "0 1px 2px rgba(0,0,0,0.2)",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2)",
+            }}
+          >
+            {badgeText}
+          </div>
         </div>
       )}
 

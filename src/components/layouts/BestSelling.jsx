@@ -105,14 +105,22 @@ const BestSelling = () => {
                   price={item.price}
                   imgSrcFirst={item.thumbnail || item.image || item.images?.[0]}
                   imgAlt={item.title || item.name}
-                  badgeText={
-                    item.discountPercentage
-                      ? `${Math.round(item.discountPercentage)}%`
-                      : "New"
-                  }
-                  badgeClassName={
-                    item.discountPercentage ? "bg-green-300" : "bg-neutral-200"
-                  }
+                  badgeText={item.badge}
+                  badgeClassName={`${
+                    item.badge === "Hot"
+                      ? "bg-red-500 text-white"
+                      : item.badge === "New"
+                        ? "bg-green-500 text-white"
+                        : item.badge === "Limited"
+                          ? "bg-orange-500 text-white"
+                          : item.badge === "Sale"
+                            ? "bg-blue-500 text-white"
+                            : item.badge === "Trending"
+                              ? "bg-purple-500 text-white"
+                              : item.badge === "Best"
+                                ? "bg-yellow-500 text-white"
+                                : ""
+                  }`}
                   ram={item.ram}
                   storage={item.storage}
                   colors={item.colors}
