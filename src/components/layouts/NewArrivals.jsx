@@ -13,10 +13,14 @@ const NewArrivals = () => {
     async function fetchProducts() {
       try {
         const res = await axios.get(
-          "https://buygoo-backend.onrender.com/api/v1/product/getallproducts",
+          "http://localhost:3000/api/v1/product/getallproducts",
         );
-        const data = res.data.products || res.data;
-        setMyProducts(data);
+        const allProducts = res.data.products || res.data;
+        // Filter products by "New Arrivals" tag
+        const filteredProducts = allProducts.filter((product) =>
+          product.tags && product.tags.includes("New Arrivals")
+        );
+        setMyProducts(filteredProducts);
       } catch (error) {
         console.error("Error fetching products:", error);
       }

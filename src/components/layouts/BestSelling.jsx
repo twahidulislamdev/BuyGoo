@@ -23,8 +23,12 @@ const BestSelling = () => {
         const res = await axios.get(
           "https://buygoo-backend.onrender.com/api/v1/product/getallproducts",
         );
-        const data = res.data.products || res.data;
-        setProducts(data);
+        const allProducts = res.data.products || res.data;
+        // Filter products by "Best Selling" tag
+        const filteredProducts = allProducts.filter((product) =>
+          product.tags && product.tags.includes("Best Selling")
+        );
+        setProducts(filteredProducts);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
