@@ -10,6 +10,7 @@ import AddToCart from "./components/pages/AddToCart";
 import CheckOut from "./components/pages/CheckOut";
 import SignUp from "./components/pages/SignUp";
 import Login from "./components/pages/Login";
+import OTPVerification from "./components/pages/OTPVerification";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           </Route>
           <Route path="signup" element={<SignUp />} />
           <Route path="login" element={<Login />} />
+          <Route path="otpverification" element={<OTPVerification />} />
         </Routes>
       </BrowserRouter>
     </>

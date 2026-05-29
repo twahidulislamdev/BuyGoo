@@ -6,25 +6,66 @@ import { MdEmail, MdLock } from "react-icons/md";
 import { IoArrowBack } from "react-icons/io5";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import Container from "../Container";
-import Image from "../Image";
+import { customerAuthApi } from "../../config/api";
 
 const Login = () => {
   const navigate = useNavigate();
   const [remember, setRemember] = useState(false);
   const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setMessage("");
+    setLoading(true);
+
+    try {
+      const response = await customerAuthApi.login({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      const successMessage = response?.data?.message || "Login successful.";
+      setMessage(successMessage);
+
+      sessionStorage.setItem("buygoo_customer_email", formData.email);
+      sessionStorage.setItem("buygoo_customer_logged_in", "true");
+
+      if (remember) {
+        localStorage.setItem("buygoo_customer_email", formData.email);
+      } else {
+        localStorage.removeItem("buygoo_customer_email");
+      }
+
+      navigate("/");
+    } catch (err) {
+      setError(err?.response?.data?.message || "Login failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
       <Container>
         <div className="flex items-center justify-center font-sans overflow-hidden">
-          {/* Card Wrapper */}
           <div className="w-full h-screen grid grid-cols-1 lg:grid-cols-2 rounded-2xl overflow-hidden shadow-2xl">
-            {/* ── LEFT PANEL ── */}
             <div
               className="relative flex-col justify-between px-0 lg:px-10 py-0 lg:py-5 my-0 lg:my-5 overflow-hidden hidden lg:flex rounded-2xl border border-white/10"
               style={{ background: "#0d0d0d" }}
             >
-              {/* Grid texture overlay */}
               <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
@@ -33,14 +74,11 @@ const Login = () => {
                 }}
               />
 
-              {/* Decorative circles */}
               <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white opacity-[0.03]" />
               <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-white opacity-[0.02]" />
 
-              {/* Thin vertical accent line */}
               <div className="absolute top-0 right-10 w-px h-full bg-gradient-to-b from-transparent via-white/10 to-transparent" />
 
-              {/* Brand */}
               <div className="relative z-10 flex items-center gap-3">
                 <Link to="/" className="flex items-center gap-2">
                   <div
@@ -66,9 +104,7 @@ const Login = () => {
                 </Link>
               </div>
 
-              {/* Headline + Stats */}
               <div className="relative z-10">
-                {/* Trust badge */}
                 <div
                   className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-5 border border-white/10"
                   style={{ background: "rgba(255,255,255,0.06)" }}
@@ -95,38 +131,24 @@ const Login = () => {
                   who move fast and think clearly.
                 </p>
 
-                {/* Social proof stats */}
                 <div className="flex items-center gap-5">
                   <div className="text-center">
-                    <div className="text-lg font-medium text-white/80">
-                      12k+
-                    </div>
-                    <div className="text-[11px] text-white/30 mt-0.5">
-                      Teams
-                    </div>
+                    <div className="text-lg font-medium text-white/80">12k+</div>
+                    <div className="text-[11px] text-white/30 mt-0.5">Teams</div>
                   </div>
                   <div className="w-px h-8 bg-white/10" />
                   <div className="text-center">
-                    <div className="text-lg font-medium text-white/80">
-                      99.9%
-                    </div>
-                    <div className="text-[11px] text-white/30 mt-0.5">
-                      Uptime
-                    </div>
+                    <div className="text-lg font-medium text-white/80">99.9%</div>
+                    <div className="text-[11px] text-white/30 mt-0.5">Uptime</div>
                   </div>
                   <div className="w-px h-8 bg-white/10" />
                   <div className="text-center">
-                    <div className="text-lg font-medium text-white/80">
-                      SOC 2
-                    </div>
-                    <div className="text-[11px] text-white/30 mt-0.5">
-                      Certified
-                    </div>
+                    <div className="text-lg font-medium text-white/80">SOC 2</div>
+                    <div className="text-[11px] text-white/30 mt-0.5">Certified</div>
                   </div>
                 </div>
               </div>
 
-              {/* Back to Home */}
               <button
                 onClick={() => navigate("/")}
                 className="relative z-10 flex items-center gap-2 text-sm text-white/75 font-medium border border-white/20 hover:bg-white/14 hover:border-white/40 transition-all duration-200 px-4 py-2 rounded-lg w-fit cursor-pointer"
@@ -137,9 +159,7 @@ const Login = () => {
               </button>
             </div>
 
-            {/* ── RIGHT PANEL ── */}
             <div className="bg-white flex flex-col justify-center px-10 py-0 lg:py-6 my-0 lg:my-5 rounded-2xl border border-gray-200">
-              {/* Back to Home (Mobile Only) */}
               <button
                 onClick={() => navigate("/")}
                 className="flex lg:hidden items-center gap-2 text-sm text-gray-600 font-medium border border-gray-200 hover:bg-gray-50 transition-all duration-200 px-3 py-2 rounded-lg w-fit cursor-pointer mb-8"
@@ -148,7 +168,6 @@ const Login = () => {
                 Back to home
               </button>
 
-              {/* Header */}
               <div className="mb-10">
                 <h2
                   className="text-[26px] font-normal text-[#0d0d0d] mb-1.5"
@@ -161,11 +180,7 @@ const Login = () => {
                 </p>
               </div>
 
-              <form
-                onSubmit={(e) => e.preventDefault()}
-                className="flex flex-col gap-4"
-              >
-                {/* Email Field */}
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[10.5px] font-medium uppercase tracking-[1px] text-gray-500">
                     Email address
@@ -174,14 +189,16 @@ const Login = () => {
                     <MdEmail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 text-base pointer-events-none" />
                     <input
                       type="email"
+                      name="email"
                       placeholder="you@company.com"
                       required
+                      value={formData.email}
+                      onChange={handleChange}
                       className="w-full h-[42px] pl-10 pr-3 text-sm text-[#0d0d0d] bg-gray-50 border border-gray-200 rounded-[9px] outline-none transition-all duration-200 focus:border-[#0d0d0d] focus:bg-white focus:ring-[3px] focus:ring-black/5 placeholder:text-gray-300"
                     />
                   </div>
                 </div>
 
-                {/* Password Field */}
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[10.5px] font-medium uppercase tracking-[1px] text-gray-500">
                     Password
@@ -190,8 +207,11 @@ const Login = () => {
                     <MdLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 text-base pointer-events-none" />
                     <input
                       type={showPass ? "text" : "password"}
+                      name="password"
                       placeholder="••••••••"
                       required
+                      value={formData.password}
+                      onChange={handleChange}
                       className="w-full h-[42px] pl-10 pr-12 text-sm text-[#0d0d0d] bg-gray-50 border border-gray-200 rounded-[9px] outline-none transition-all duration-200 focus:border-[#0d0d0d] focus:bg-white focus:ring-[3px] focus:ring-black/5 placeholder:text-gray-300"
                     />
                     <button
@@ -212,7 +232,6 @@ const Login = () => {
                   </div>
                 </div>
 
-                {/* Remember me */}
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -229,15 +248,17 @@ const Login = () => {
                   </label>
                 </div>
 
-                {/* Sign In Button */}
+                {error && <p className="text-xs text-red-500">{error}</p>}
+                {message && <p className="text-xs text-emerald-600">{message}</p>}
+
                 <button
                   type="submit"
-                  className="w-full h-11 bg-[#0d0d0d] text-white text-xs font-medium uppercase tracking-[2px] rounded-[10px] hover:bg-[#2a2a2a] active:scale-[0.99] transition-all duration-200 cursor-pointer mt-1"
+                  disabled={loading}
+                  className="w-full h-11 bg-[#0d0d0d] text-white text-xs font-medium uppercase tracking-[2px] rounded-[10px] hover:bg-[#2a2a2a] active:scale-[0.99] transition-all duration-200 cursor-pointer mt-1 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  Sign in
+                  {loading ? "Signing in..." : "Sign in"}
                 </button>
 
-                {/* Divider */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1 h-px bg-gray-100" />
                   <span className="text-[11px] text-gray-300 whitespace-nowrap">
@@ -246,7 +267,6 @@ const Login = () => {
                   <div className="flex-1 h-px bg-gray-100" />
                 </div>
 
-                {/* Google + GitHub Buttons */}
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -264,7 +284,6 @@ const Login = () => {
                   </button>
                 </div>
 
-                {/* Sign Up */}
                 <p className="text-center text-sm text-gray-400 mt-1">
                   Don't have an account?{" "}
                   <Link
