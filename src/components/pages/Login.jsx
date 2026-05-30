@@ -7,9 +7,11 @@ import { IoArrowBack } from "react-icons/io5";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import Container from "../Container";
 import { customerAuthApi } from "../../config/api";
+import { useAuthStore } from "../../stores/authStore";
 
 const Login = () => {
   const navigate = useNavigate();
+  const setUser = useAuthStore((state) => state.setUser);
   const [remember, setRemember] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -37,11 +39,15 @@ const Login = () => {
         password: formData.password,
       });
 
-      const successMessage = response?.data?.message || "Login successful.";
-      setMessage(successMessage);
+      const responseMessage = response?.data?.message || "";
+      if (responseMessage.startsWith("Error")) {
+        setError(responseMessage);
+        return;
+      }
 
-      sessionStorage.setItem("buygoo_customer_email", formData.email);
-      sessionStorage.setItem("buygoo_customer_logged_in", "true");
+      const user = response?.data?.user || { email: formData.email };
+      setUser(user);
+      setMessage(responseMessage || "Login successful.");
 
       if (remember) {
         localStorage.setItem("buygoo_customer_email", formData.email);

@@ -11,6 +11,7 @@ import CheckOut from "./components/pages/CheckOut";
 import SignUp from "./components/pages/SignUp";
 import Login from "./components/pages/Login";
 import OTPVerification from "./components/pages/OTPVerification";
+import CustomerDashboard from "./components/pages/CustomerDashboard";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="productdetails" element={<ProductDetails />} />
             <Route path="addtocart" element={<AddToCart />} />
             <Route path="checkout" element={<CheckOut />} />
+            <Route path="account" element={<CustomerDashboard />} />
           </Route>
           <Route path="signup" element={<SignUp />} />
           <Route path="login" element={<Login />} />

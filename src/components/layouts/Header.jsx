@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Container from "../Container";
 import Flex from "../Flex";
 import {
-  FaRegUser,
   FaRegHeart,
   FaHome,
   FaBars,
@@ -12,6 +11,7 @@ import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import { BiSolidContact } from "react-icons/bi";
 import { useCartStore } from "../../stores/cartStore";
+import UserAccountDropdown from "./UserAccountDropdown";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -19,7 +19,6 @@ const Header = () => {
   const { cart } = useCartStore();
   const totalItems = cart.reduce((s, i) => s + i.quantity, 0);
 
-  // Handle scroll detection
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 50) {
@@ -96,9 +95,7 @@ const Header = () => {
                 )}
               </Link>
 
-              <Link to="/login">
-                <FaRegUser className="text-black text-xl cursor-pointer hover:text-mainColor transition-colors" />
-              </Link>
+              <UserAccountDropdown />
             </div>
           </Flex>
         </Container>
@@ -141,9 +138,7 @@ const Header = () => {
               )}
             </Link>
 
-            <Link to={"/login"}>
-              <FaRegUser className="text-black text-xl cursor-pointer" />
-            </Link>
+            <UserAccountDropdown />
           </div>
         </Flex>
       </div>

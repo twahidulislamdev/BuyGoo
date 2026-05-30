@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Container from "../Container";
-import { CreditCard, Landmark, Banknote, Wallet } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { CreditCard, Landmark, Banknote, Wallet, AlertCircle, Loader } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useCartStore, useDeliveryStore } from "../../stores/cartStore";
+import { useAuthStore } from "../../stores/authStore";
+import { orderApi } from "../../config/api";
+
 
 // Payment Options Data
 const paymentOptions = [
@@ -32,10 +35,15 @@ const paymentOptions = [
   },
 ];
 
+const isValidObjectId = (value) =>
+  typeof value === "string" && /^[0-9a-fA-F]{24}$/.test(value);
+
 const CheckOut = () => {
   const location = useLocation();
-  const { cart } = useCartStore();
+  const navigate = useNavigate();
+  const { cart, clearCart } = useCartStore();
   const { deliveryMethod } = useDeliveryStore();
+  const { isLoggedIn, email: storedEmail, checkLogin } = useAuthStore();
 
   // Passed Data from Add to Cart Page
   const passedState = location.state || {};
@@ -45,15 +53,131 @@ const CheckOut = () => {
   const [payment, setPayment] = useState("onlinePayment");
   const [saveInfo, setSaveInfo] = useState(false);
 
+  // Form State
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: storedEmail || "",
+    address: "",
+    specialNote: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+
+  // Check login on mount
+  useEffect(() => {
+    const loggedIn = checkLogin();
+    if (!loggedIn) {
+      setShowLoginModal(true);
+    }
+  }, [checkLogin]);
+
   // Calculate Subtotal Price
   const subtotal =
     passedState.subtotal ??
     products.reduce((s, p) => s + p.price * (p.quantity || 1), 0);
 
   // Add Shipping Price
-  const shipping = passedState.shipping ?? (deliveryMethod === "home" ? 80 : 0);
+  const shipping = passedState.shipping ?? (deliveryMethod === "home" ? 5 : 0);
+  
   // Calculate Total Price
-  const total = passedState.total ?? (subtotal + shipping).toFixed(2);
+  const total = (subtotal + shipping).toFixed(2);
+
+  // Handle input change
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setError("");
+  };
+
+  // Validate form
+  const validateForm = () => {
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.phone ||
+      !formData.email ||
+      !formData.address
+    ) {
+      setError("All required fields must be filled");
+      return false;
+    }
+
+    if (products.length === 0) {
+      setError("Your cart is empty");
+      return false;
+    }
+
+    return true;
+  };
+
+  // Handle place order
+  const handlePlaceOrder = async () => {
+    if (!isLoggedIn) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const orderPayload = {
+        items: products.map((item) => ({
+          id: item.id || item.productId,
+          productId: isValidObjectId(item.productId)
+            ? item.productId
+            : isValidObjectId(item.id)
+            ? item.id
+            : undefined,
+          title: item.name || item.title,
+          thumbnail: item.image || item.imgSrcFirst || "",
+          price: item.price,
+          quantity: item.quantity || 1,
+        })),
+        shipping: {
+          fullName: `${formData.firstName} ${formData.lastName}`,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.email.split("@")[0], // Placeholder, ideally should have city field
+        },
+        couponCode: couponCode || undefined,
+        paymentMethod: payment,
+        specialNote: formData.specialNote,
+      };
+
+      const response = await orderApi.createOrder(orderPayload);
+
+      if (response.data.success) {
+        // Clear cart after successful order
+        clearCart();
+        
+        // Show success message
+        alert(`Order placed successfully! Order ID: ${response.data.data._id}`);
+        
+        // Redirect to home or orders page
+        navigate("/account");
+      }
+    } catch (err) {
+      const errorMessage =
+        err?.response?.data?.message || "Failed to place order. Please try again.";
+      setError(errorMessage);
+      console.error("Order error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="px-3">
@@ -69,6 +193,35 @@ const CheckOut = () => {
           Review your order and complete your purchase
         </p>
 
+        {/* Login Modal */}
+        {showLoginModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+            <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl">
+              <div className="flex items-center gap-3 mb-4">
+                <AlertCircle className="text-red-500" size={24} />
+                <h2 className="text-xl font-semibold text-gray-900">Login Required</h2>
+              </div>
+              <p className="text-gray-600 mb-6">
+                You need to be logged in to place an order. Please log in to your account to continue.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => navigate("/login")}
+                  className="flex-1 bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
+                >
+                  Go to Login
+                </button>
+                <button
+                  onClick={() => setShowLoginModal(false)}
+                  className="flex-1 border border-gray-300 text-gray-900 py-3 rounded-lg font-semibold hover:bg-gray-50 transition"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-wrap gap-6 items-start justify-center">
           {/* ── LEFT: Billing Form ── */}
           <div className="flex-1 w-[50%] border border-neutral-300 rounded-xl p-5">
@@ -82,33 +235,66 @@ const CheckOut = () => {
             {/* First / Last */}
             <div className="flex gap-3">
               <Field label="First Name" required>
-                <input type="text" placeholder="John" />
+                <input
+                  type="text"
+                  name="firstName"
+                  placeholder="John"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                />
               </Field>
               <Field label="Last Name" required>
-                <input type="text" placeholder="Doe" />
+                <input
+                  type="text"
+                  name="lastName"
+                  placeholder="Doe"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                />
               </Field>
             </div>
 
             {/* Phone / Email */}
             <div className="flex gap-3">
               <Field label="Phone Number" required>
-                <input type="text" placeholder="+1 555 000 0000" />
+                <input
+                  type="text"
+                  name="phone"
+                  placeholder="+1 555 000 0000"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                />
               </Field>
               <Field label="Email Address" required>
-                <input type="email" placeholder="john@example.com" />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="john@example.com"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
               </Field>
             </div>
 
             {/* Address */}
             <Field label="Address" required>
-              <input type="text" placeholder="123 Main Street, City, Country" />
+              <input
+                type="text"
+                name="address"
+                placeholder="123 Main Street, City, Country"
+                value={formData.address}
+                onChange={handleInputChange}
+              />
             </Field>
 
             {/* Special Note */}
             <Field label="Special Note" optional>
               <textarea
+                name="specialNote"
                 rows={3}
                 placeholder="Notes about your order, e.g. special notes for delivery."
+                value={formData.specialNote}
+                onChange={handleInputChange}
               />
             </Field>
 
@@ -124,43 +310,55 @@ const CheckOut = () => {
                 Save this info for faster checkout next time
               </span>
             </label>
+
+            {/* Error Message */}
+            {error && (
+              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+                <AlertCircle className="text-red-500 flex-shrink-0 mt-0.5" size={18} />
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            )}
           </div>
 
-          {/* ── RIGHT PANEL (improved) ── */}
+          {/* ── RIGHT PANEL ── */}
           <div className="w-full lg:w-[40%] flex flex-col gap-4">
             {/* Order Summary Card */}
             <div className="bg-white rounded-2xl border border-[#e8e6e0] overflow-hidden">
               {/* Card header */}
               <div className="px-5 py-4 border-b border-[#f0ede5]">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400">
-                  Your Order
+                  Your Order ({products.length} items)
                 </p>
               </div>
 
               {/* Product rows */}
-              <div className="px-5 py-4 flex flex-col gap-3">
-                {products.map((p) => (
-                  <div key={p.id} className="flex items-center gap-3">
-                    <div className="w-[85px] h-[56px] rounded-xl overflow-hidden bg-gray-50 flex-shrink-0 border border-[#f0ede5]">
-                      <img
-                        src={p.image || p.imgSrcFirst}
-                        alt={p.name || p.title}
-                        className="w-full h-full p-1 object-cover"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium text-gray-900 truncate">
-                        {p.name || p.title}
+              <div className="px-5 py-4 flex flex-col gap-3 max-h-[300px] overflow-y-auto">
+                {products.length > 0 ? (
+                  products.map((p) => (
+                    <div key={p.id} className="flex items-center gap-3">
+                      <div className="w-[85px] h-[56px] rounded-xl overflow-hidden bg-gray-50 flex-shrink-0 border border-[#f0ede5]">
+                        <img
+                          src={p.image || p.imgSrcFirst}
+                          alt={p.name || p.title}
+                          className="w-full h-full p-1 object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-medium text-gray-900 truncate">
+                          {p.name || p.title}
+                        </p>
+                        <p className="text-[11px] text-gray-400 mt-0.5">
+                          Quantity: {p.quantity || 1}
+                        </p>
+                      </div>
+                      <p className="text-[13px] font-semibold text-gray-900 whitespace-nowrap">
+                        ৳{p.price}
                       </p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">
-                        Quantity: {p.quantity || 1}
-                      </p>
                     </div>
-                    <p className="text-[13px] font-semibold text-gray-900 whitespace-nowrap">
-                      ৳{p.price}
-                    </p>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-center text-gray-400 py-4">Your cart is empty</p>
+                )}
               </div>
 
               {/* Pricing rows */}
@@ -193,6 +391,25 @@ const CheckOut = () => {
                     </span>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Coupon Code */}
+            <div className="bg-white rounded-2xl border border-[#e8e6e0] p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400 mb-3">
+                Have a Coupon Code?
+              </p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Enter coupon code"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  className="flex-1 px-3 py-2 border border-[#e5e3dc] rounded-lg text-[13px] outline-none focus:border-gray-900"
+                />
+                <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-[12px] font-semibold transition">
+                  Apply
+                </button>
               </div>
             </div>
 
@@ -289,10 +506,18 @@ const CheckOut = () => {
 
             {/* Place Order Button */}
             <button
-              type="button"
-              className="w-full bg-[#111] hover:bg-[#2a2a2a] active:scale-[0.99] text-white text-[13px] font-semibold uppercase tracking-wider py-4 rounded-[14px] transition-all duration-150"
+              onClick={handlePlaceOrder}
+              disabled={loading}
+              className="w-full bg-[#111] hover:bg-[#2a2a2a] disabled:bg-gray-400 active:scale-[0.99] text-white text-[13px] font-semibold uppercase tracking-wider py-4 rounded-[14px] transition-all duration-150 flex items-center justify-center gap-2"
             >
-              Place Order
+              {loading ? (
+                <>
+                  <Loader size={18} className="animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Place Order"
+              )}
             </button>
 
             <p className="text-[11px] text-gray-400 text-center leading-relaxed">
@@ -310,7 +535,7 @@ const CheckOut = () => {
   );
 };
 
-/* ── Helper components (unchanged) ── */
+/* ── Helper components ── */
 
 const Field = ({ label, required, optional, children }) => (
   <div className="mb-4 flex-1">
