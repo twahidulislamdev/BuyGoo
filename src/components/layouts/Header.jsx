@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import Container from "../Container";
 import Flex from "../Flex";
-import {
-  FaRegHeart,
-  FaHome,
-  FaBars,
-  FaCalendarCheck,
-} from "react-icons/fa";
+import { FaRegHeart, FaHome, FaBars, FaCalendarCheck } from "react-icons/fa";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import { BiSolidContact } from "react-icons/bi";
@@ -80,9 +75,7 @@ const Header = () => {
                   placeholder="What are you looking?"
                 />
               </div>
-              <FaRegHeart className="text-black text-xl cursor-pointer hover:text-mainColor transition-colors" />
-
-              {/* Cart icon with badge */}
+              {/* Add To Cart Icon */}
               <Link
                 to="/addtocart"
                 className="relative cursor-pointer text-black hover:text-mainColor transition-colors"
@@ -94,7 +87,7 @@ const Header = () => {
                   </span>
                 )}
               </Link>
-
+              {/* User Icon With Account Dropdown */}
               <UserAccountDropdown />
             </div>
           </Flex>
@@ -115,7 +108,7 @@ const Header = () => {
             <span className="text-mainColor tracking-[2px]">Buy</span>Goo
           </div>
           {/* Icons + Search */}
-          <div className="flex items-center gap-x-3 lg:gap-x-5">
+          <div className="flex items-center gap-x-2 lg:gap-x-5">
             <div className="flex-1 mx-3 lg:mx-5 flex justify-center items-center">
               <input
                 className="w-[165px] lg:w-[250px] py-2 px-3 rounded-md bg-black/5 border border-black/20 outline-none focus:border-black/40 text-black text-sm placeholder:text-gray-500"
@@ -123,21 +116,18 @@ const Header = () => {
                 placeholder="What are you looking?"
               />
             </div>
-            <FaRegHeart className="text-black text-xl cursor-pointer" />
 
             {/* Mobile Cart icon with badge */}
-            <Link
-              to="/addtocart"
-              className="relative cursor-pointer"
-            >
+            <Link to="/addtocart" className="relative cursor-pointer">
               <HiOutlineShoppingBag className="text-black text-2xl" />
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 w-4 h-4 bg-mainColor text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">
+                <span className="absolute -top-2 -right-2 w-4 h-4 bg-mainColor text-white text-[9px] font-bold  flex items-center justify-center leading-none">
                   {totalItems}
                 </span>
               )}
             </Link>
 
+            {/* User Icon With Account Dropdown */}
             <UserAccountDropdown />
           </div>
         </Flex>
@@ -168,12 +158,6 @@ const Header = () => {
           <div className="flex flex-col justify-center items-center">
             <BiSolidContact className="text-mainColor text-2xl  pb-1.5 cursor-pointer" />
             <p className="text-sm text-mainColor">CONTACT</p>
-          </div>
-        </Link>
-        <Link to="/pages" className="flex-1">
-          <div className="flex flex-col justify-center items-center">
-            <FaBars className="text-mainColor text-2xl  pb-1.5 cursor-pointer" />
-            <p className="text-sm text-mainColor">PAGES</p>
           </div>
         </Link>
       </div>

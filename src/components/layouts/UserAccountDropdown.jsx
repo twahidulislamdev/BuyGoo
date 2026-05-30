@@ -44,25 +44,25 @@ export default function UserAccountDropdown({ className = "" }) {
         onClick={() => setDropdownOpen((prev) => !prev)}
         aria-label="Account menu"
         aria-expanded={dropdownOpen}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white text-slate-900 shadow-sm transition-all duration-200 hover:border-mainColor hover:text-mainColor"
+        className="flex h-10 w-10 items-center justify-center bg-neutral-100 border border-neutral-300 rounded-xl  text-slate-900 hover:border-mainColor hover:text-mainColor transition-all duration-300 cursor-pointer"
       >
-        <FaRegUser className="text-lg" />
+        <FaRegUser className="text-xl" />
       </button>
 
       {dropdownOpen && (
-        <div className="absolute right-0 z-50 mt-3 w-72 overflow-hidden rounded-[28px] border border-gray-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.12)]">
+        <div className="absolute right-0 z-50 mt-7 w-[375px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.12)]">
           {isLoggedIn ? (
             <div>
               <div className="px-5 py-5">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-mainColor/10 text-lg font-semibold text-mainColor">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-black text-lg font-semibold text-white">
                     {avatarLetter}
                   </div>
                   <div className="min-w-0">
                     <h3 className="truncate text-base font-semibold text-slate-900">
                       {fullName}
                     </h3>
-                    <p className="mt-1 truncate text-sm text-slate-500">
+                    <p className="mt-1 truncate text-xs text-slate-500">
                       {displayEmail}
                     </p>
                   </div>
@@ -75,21 +75,16 @@ export default function UserAccountDropdown({ className = "" }) {
                 <Link
                   to="/account"
                   onClick={closeDropdown}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-800 hover:bg-slate-100"
+                  className="rounded-xl border border-neutral-300 bg-neutral-100 px-4 py-3 text-sm
+                  text-center font-bold text-slate-800 hover:bg-slate-100 cursor-pointer transition-all duration-300"
                 >
                   My Dashboard
                 </Link>
-                <Link
-                  to="/account"
-                  onClick={closeDropdown}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-800 hover:bg-slate-100"
-                >
-                  My Orders
-                </Link>
+
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="rounded-2xl bg-mainColor px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-mainColor/90"
+                  className="rounded-xl bg-black px-4 py-3 text-sm font-medium text-white  hover:bg-mainColor/90 cursor-pointer transition-all duration-300"
                 >
                   Logout
                 </button>
@@ -110,14 +105,14 @@ export default function UserAccountDropdown({ className = "" }) {
                 <Link
                   to="/login"
                   onClick={closeDropdown}
-                  className="rounded-2xl bg-mainColor px-4 py-3 text-center text-sm font-medium text-white hover:bg-mainColor/90"
+                  className="rounded-xl bg-mainColor px-4 py-3 text-center text-sm font-medium text-white hover:bg-mainColor/90 cursor-pointer transition-all duration-300"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
                   onClick={closeDropdown}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-medium text-slate-800 hover:bg-slate-100"
+                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-medium text-slate-800 hover:bg-slate-100 cursor-pointer transition-all duration-300"
                 >
                   Create Account
                 </Link>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "../Container";
-import { useAuthStore } from "../../stores/authStore";
+import { useAuthStore, getFullName } from "../../stores/authStore";
 
 const menuItems = [
   { label: "My Orders", description: "Review your recent purchases." },
@@ -29,8 +29,10 @@ const contentMap = {
     "Update your password regularly to keep your account secure.",
 };
 
+// ------------------ My Orders Component -------------------
 import { orderApi } from "../../config/api";
 
+// ================== My Orders Component ===================
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +61,8 @@ const MyOrders = () => {
     return <p className="text-gray-500">You haven't placed any orders yet.</p>;
 
   return (
-    <div className="space-y-4">
+    // ================== Orders Item List Layout ===================
+    <div className="space-y-3">
       {orders.map((order) => (
         <div
           key={order._id}
@@ -133,11 +136,14 @@ const MyOrders = () => {
     </div>
   );
 };
-
+// ================== Dashboard Layout and Logic ===================
 const CustomerDashboard = () => {
   const navigate = useNavigate();
   const { email, isLoggedIn, checkLogin, logout } = useAuthStore();
   const [activeItem, setActiveItem] = useState("My Orders");
+
+  const { user } = useAuthStore();
+  const fullName = getFullName(user, email);
 
   useEffect(() => {
     checkLogin();
@@ -148,8 +154,7 @@ const CustomerDashboard = () => {
     navigate("/login");
   };
 
-  const displayName = email ? email.split("@")[0] : "Customer";
-
+  // If the user is not logged in, show a prompt to log in
   if (!isLoggedIn) {
     return (
       <Container>
@@ -175,9 +180,10 @@ const CustomerDashboard = () => {
   }
 
   return (
+    // ================== Dashboard Layout Sidebar ===================
     <Container>
-      <div className="py-14">
-        <div className="mx-auto overflow-hidden rounded-[32px] border border-gray-200 bg-white shadow-sm">
+      <div className="py-5">
+        <div className="mx-auto overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
           <div className="grid gap-6 md:grid-cols-[280px_1fr]">
             <aside className="border-r border-gray-100 bg-slate-50 p-6">
               <div className="mb-8">
@@ -185,9 +191,9 @@ const CustomerDashboard = () => {
                   Customer Dashboard
                 </p>
                 <h1 className="mt-3 text-2xl font-semibold text-gray-900">
-                  Hello, {displayName}
+                  Hello, <br /> {fullName}
                 </h1>
-                <p className="mt-2 text-sm text-gray-500">{email}</p>
+                <p className="mt-2 text-xs text-gray-500">{email}</p>
               </div>
 
               <nav className="space-y-2">
@@ -202,14 +208,21 @@ const CustomerDashboard = () => {
                         setActiveItem(item.label);
                       }
                     }}
-                    className={`w-full rounded-3xl px-4 py-3 text-left text-sm transition-all duration-200 ${
+                    className={`w-full rounded-xl px-3 py-3 text-left text-sm transition-all duration-200 border border-neutral-300 cursor-pointer ${
                       item.label === activeItem
-                        ? "bg-mainColor text-white"
-                        : "bg-white text-gray-700 hover:bg-gray-100"
+                        ? "bg-black text-white"
+                        : "bg-white text-neutral-700 hover:bg-gray-100"
                     }`}
                   >
-                    <div className="font-medium">{item.label}</div>
-                    <p className="mt-1 text-xs text-gray-500">
+                    <div className="text-base font-bold">{item.label}</div>
+
+                    <p
+                      className={`mt-1 text-xs ${
+                        item.label === activeItem
+                          ? "text-white"
+                          : "text-neutral-500"
+                      }`}
+                    >
                       {item.description}
                     </p>
                   </button>
@@ -229,13 +242,16 @@ const CustomerDashboard = () => {
                 </div>
                 <Link
                   to="/shop"
-                  className="inline-flex rounded-full bg-mainColor px-5 py-3 text-sm font-semibold text-white hover:bg-mainColor/90"
+                  className="inline-flex rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white"
                 >
                   Continue shopping
+                  <span className="ml-2" aria-hidden="true">
+                    →
+                  </span>
                 </Link>
               </div>
 
-              <div className="rounded-[32px] border border-gray-200 bg-gray-50 p-8 text-gray-700">
+              <div className="rounded-xl border border-gray-200 bg-gray-50 p-8 text-gray-700">
                 {activeItem === "My Orders" ? (
                   <MyOrders />
                 ) : (

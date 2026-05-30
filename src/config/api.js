@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/v1";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/v1";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -10,6 +11,7 @@ const apiClient = axios.create({
   },
 });
 
+// Customer Authentication API
 export const customerAuthApi = {
   signup: (payload) => apiClient.post("/customer/signup", payload),
   login: (payload) => apiClient.post("/customer/login", payload),
@@ -19,6 +21,7 @@ export const customerAuthApi = {
   resendOtp: (payload) => apiClient.post("/customer/resendotp", payload),
 };
 
+// Orders API
 export const orderApi = {
   createOrder: (payload) => apiClient.post("/order", payload),
   getMyOrders: () => apiClient.get("/order/myorders"),
