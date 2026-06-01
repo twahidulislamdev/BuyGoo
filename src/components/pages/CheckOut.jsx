@@ -168,7 +168,7 @@ const CheckOut = () => {
           fullName: `${formData.firstName} ${formData.lastName}`,
           phone: formData.phone,
           address: formData.address,
-          city: formData.email.split("@")[0], // Placeholder, ideally should have city field
+          city: formData.email.split("@")[0],
         },
         couponCode: couponCode || undefined,
         paymentMethod: payment,
@@ -242,30 +242,59 @@ const CheckOut = () => {
 
         {/* Order Success Modal */}
         {showOrderSuccessModal && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-            <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl">
-              <div className="flex items-center gap-3 mb-4">
-                <AlertCircle className="text-emerald-500" size={24} />
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Order Confirmation
+          <div className="fixed inset-0  flex items-center justify-center z-50 px-4">
+            <div className="relative w-full bg-white rounded-2xl p-8 max-w-sm border-2 border-green-500   overflow-hidden">
+              {/* Icon + heading */}
+              <div className="flex flex-col items-center text-center pt-4 pb-6">
+                <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mb-5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-7 h-7 text-emerald-300"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-semibold text-black mb-1">
+                  Order placed!
                 </h2>
+                <p className="text-sm text-black leading-relaxed">
+                  Your order has been confirmed and is being processed.
+                </p>
               </div>
-              <p className="text-gray-600 mb-6">
-                Your order has been placed successfully.
-                {orderId && <span> Order ID: {orderId}</span>}
-              </p>
+
+              {/* Order details card */}
+              <div className="rounded-xl px-4 py-3 mb-6 border border-green-500 bg-green-50">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-black uppercase tracking-wide">
+                    Order ID
+                  </span>
+                  <span className="text-sm font-medium text-black font-mono">
+                    {orderId ? `#${orderId}` : "—"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Actions */}
               <div className="flex gap-3">
                 <button
                   onClick={() => navigate("/account")}
-                  className="flex-1 bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
+                  className="flex-1 bg-emerald-500 text-white py-3 rounded-xl font-semibold hover:bg-emerald-600 transition cursor-pointer"
                 >
-                  Go to Dashboard Orders
+                  Track order
                 </button>
                 <button
                   onClick={() => setShowOrderSuccessModal(false)}
-                  className="flex-1 border border-gray-300 text-gray-900 py-3 rounded-lg font-semibold hover:bg-gray-50 transition"
+                  className="flex-1 border border-black text-black py-3 rounded-xl font-semibold cursor-pointer hover:bg-gray-100 transition"
                 >
-                  Ok
+                  Close
                 </button>
               </div>
             </div>
@@ -563,7 +592,7 @@ const CheckOut = () => {
             <button
               onClick={handlePlaceOrder}
               disabled={loading}
-              className="w-full bg-[#111] hover:bg-[#2a2a2a] disabled:bg-gray-400 active:scale-[0.99] text-white text-[13px] font-semibold uppercase tracking-wider py-4 rounded-[14px] transition-all duration-150 flex items-center justify-center gap-2"
+              className="w-full bg-[#111] hover:bg-[#2a2a2a] disabled:bg-gray-400 active:scale-[0.99] text-white text-[13px] font-semibold uppercase tracking-wider py-4 rounded-[14px] transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer"
             >
               {loading ? (
                 <>

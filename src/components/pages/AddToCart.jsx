@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Container from "../Container";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -9,7 +8,6 @@ export default function ShoppingCart() {
   const { deliveryMethod, setDeliveryMethod } = useDeliveryStore();
   const items = cart.length > 0 ? cart : [];
   const delivery = deliveryMethod || "store";
-  const [promo, setPromo] = useState("");
 
   // Update Quantity
   const updateQty = (id, delta) => {
@@ -347,36 +345,6 @@ export default function ShoppingCart() {
                       </div>
                     </button>
                   ))}
-                </div>
-              </div>
-
-              {/* ── Promo Code Section ── */}
-              <div className="space-y-3">
-                {/* Heading */}
-                <h3 className="text-sm font-bold text-neutral-900 uppercase tracking-wide">
-                  Promo Code
-                </h3>
-
-                {/* Promo Input */}
-                <div className="flex items-center gap-3 border border-neutral-300 focus-within:border-black focus-within:ring-4 focus-within:ring-black/5 rounded-2xl px-3 py-3 transition-all duration-200 bg-white">
-                  {/* Icon */}
-                  <div className="w-8 h-8 rounded-xl bg-neutral-100 flex items-center justify-center text-lg">
-                    🎁
-                  </div>
-
-                  {/* Input */}
-                  <input
-                    type="text"
-                    placeholder="Enter promo or gift code"
-                    value={promo}
-                    onChange={(e) => setPromo(e.target.value)}
-                    className="flex-1 bg-transparent text-sm text-black placeholder:text-neutral-400 outline-none"
-                  />
-
-                  {/* Apply Button */}
-                  <button className="bg-black hover:bg-neutral-800 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 cursor-pointer active:scale-[0.95]">
-                    Apply
-                  </button>
                 </div>
               </div>
 
