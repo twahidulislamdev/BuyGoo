@@ -10,6 +10,7 @@ import UserAccountDropdown from "./UserAccountDropdown";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const { cart } = useCartStore();
   const totalItems = cart.reduce((s, i) => s + i.quantity, 0);
@@ -103,35 +104,77 @@ const Header = () => {
             : "bg-white shadow-sm"
         }`}
       >
-        <Flex className={"justify-between items-center"}>
-          <div className="text-xl font-bold text-black">
+        <Flex className={"justify-between items-center relative"}>
+          <button
+            type="button"
+            onClick={() => setIsSidebarOpen(true)}
+            className="text-2xl text-black"
+            aria-label="Open menu"
+          >
+            <FaBars />
+          </button>
+
+          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xl font-bold text-black">
             <span className="text-mainColor tracking-[2px]">Buy</span>Goo
           </div>
-          {/* Icons + Search */}
-          <div className="flex items-center gap-x-2 lg:gap-x-5">
-            <div className="flex-1 mx-3 lg:mx-5 flex justify-center items-center">
-              <input
-                className="w-[165px] lg:w-[250px] py-2 px-3 rounded-md bg-black/5 border border-black/20 outline-none focus:border-black/40 text-black text-sm placeholder:text-gray-500"
-                type="text"
-                placeholder="What are you looking?"
-              />
-            </div>
 
-            {/* Mobile Cart icon with badge */}
+          <div className="flex items-center gap-x-3">
             <Link to="/addtocart" className="relative cursor-pointer">
               <HiOutlineShoppingBag className="text-black text-2xl" />
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 w-4 h-4 bg-mainColor text-white text-[9px] font-bold  flex items-center justify-center leading-none">
+                <span className="absolute -top-2 -right-2 w-4 h-4 bg-mainColor text-white text-[9px] font-bold flex items-center justify-center leading-none">
                   {totalItems}
                 </span>
               )}
             </Link>
-
-            {/* User Icon With Account Dropdown */}
             <UserAccountDropdown />
           </div>
         </Flex>
       </div>
+
+      {isSidebarOpen && (
+        <div className="fixed inset-0 z-[1000] lg:hidden">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+          <div className="absolute left-0 top-0 h-full w-[80%] max-w-xs bg-white shadow-xl p-5 overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-sm text-gray-500 uppercase tracking-wider">All Categories</p>
+                <h2 className="text-xl font-semibold text-black">Browse</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsSidebarOpen(false)}
+                className="text-black text-2xl"
+                aria-label="Close menu"
+              >
+                ×
+              </button>
+            </div>
+            <div className="mb-5">
+              <input
+                className="w-full py-3 px-4 rounded-md bg-black/5 border border-black/20 text-black text-sm placeholder:text-gray-500 outline-none focus:border-black/40 transition"
+                type="text"
+                placeholder="Search categories"
+              />
+            </div>
+            <nav className="space-y-3">
+              {menuItems.map((item, idx) => (
+                <Link
+                  to={item.path}
+                  key={idx}
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="block py-3 px-3 rounded-md text-black hover:bg-mainColor/10 transition"
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        </div>
+      )}
       {/*========= Mobile Header part End Here =========*/}
 
       {/*========= Mobile Footer Nav start Here =========*/}

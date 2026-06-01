@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Container from "../Container";
-import { CreditCard, Landmark, Banknote, Wallet, AlertCircle, Loader } from "lucide-react";
+import {
+  CreditCard,
+  Landmark,
+  Banknote,
+  Wallet,
+  AlertCircle,
+  Loader,
+} from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCartStore, useDeliveryStore } from "../../stores/cartStore";
 import { useAuthStore } from "../../stores/authStore";
 import { orderApi } from "../../config/api";
-
 
 // Payment Options Data
 const paymentOptions = [
@@ -47,13 +53,13 @@ const CheckOut = () => {
 
   // Passed Data from Add to Cart Page
   const passedState = location.state || {};
-  const products = passedState.items || cart || [];
+  const [products, setProducts] = useState(passedState.items || cart || []);
 
   // Payment Method State
   const [payment, setPayment] = useState("onlinePayment");
   const [saveInfo, setSaveInfo] = useState(false);
 
-  // Form State
+  // Form State Billing Details
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -66,7 +72,15 @@ const CheckOut = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showOrderSuccessModal, setShowOrderSuccessModal] = useState(false);
+  const [orderId, setOrderId] = useState("");
   const [couponCode, setCouponCode] = useState("");
+
+  useEffect(() => {
+    if (!passedState.items) {
+      setProducts(cart);
+    }
+  }, [cart, passedState.items]);
 
   // Check login on mount
   useEffect(() => {
@@ -77,13 +91,17 @@ const CheckOut = () => {
   }, [checkLogin]);
 
   // Calculate Subtotal Price
-  const subtotal =
-    passedState.subtotal ??
-    products.reduce((s, p) => s + p.price * (p.quantity || 1), 0);
+  const subtotal = products.reduce(
+    (s, p) => s + p.price * (p.quantity || 1),
+    0,
+  );
 
   // Add Shipping Price
-  const shipping = passedState.shipping ?? (deliveryMethod === "home" ? 5 : 0);
-  
+  const shipping =
+    products.length === 0
+      ? 0
+      : (passedState.shipping ?? (deliveryMethod === "home" ? 5 : 0));
+
   // Calculate Total Price
   const total = (subtotal + shipping).toFixed(2);
 
@@ -139,8 +157,8 @@ const CheckOut = () => {
           productId: isValidObjectId(item.productId)
             ? item.productId
             : isValidObjectId(item.id)
-            ? item.id
-            : undefined,
+              ? item.id
+              : undefined,
           title: item.name || item.title,
           thumbnail: item.image || item.imgSrcFirst || "",
           price: item.price,
@@ -160,18 +178,15 @@ const CheckOut = () => {
       const response = await orderApi.createOrder(orderPayload);
 
       if (response.data.success) {
-        // Clear cart after successful order
+        setOrderId(response.data.data._id || "");
         clearCart();
-        
-        // Show success message
-        alert(`Order placed successfully! Order ID: ${response.data.data._id}`);
-        
-        // Redirect to home or orders page
-        navigate("/account");
+        setProducts([]);
+        setShowOrderSuccessModal(true);
       }
     } catch (err) {
       const errorMessage =
-        err?.response?.data?.message || "Failed to place order. Please try again.";
+        err?.response?.data?.message ||
+        "Failed to place order. Please try again.";
       setError(errorMessage);
       console.error("Order error:", err);
     } finally {
@@ -199,10 +214,13 @@ const CheckOut = () => {
             <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl">
               <div className="flex items-center gap-3 mb-4">
                 <AlertCircle className="text-red-500" size={24} />
-                <h2 className="text-xl font-semibold text-gray-900">Login Required</h2>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Login Required
+                </h2>
               </div>
               <p className="text-gray-600 mb-6">
-                You need to be logged in to place an order. Please log in to your account to continue.
+                You need to be logged in to place an order. Please log in to
+                your account to continue.
               </p>
               <div className="flex gap-3">
                 <button
@@ -216,6 +234,38 @@ const CheckOut = () => {
                   className="flex-1 border border-gray-300 text-gray-900 py-3 rounded-lg font-semibold hover:bg-gray-50 transition"
                 >
                   Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Order Success Modal */}
+        {showOrderSuccessModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+            <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl">
+              <div className="flex items-center gap-3 mb-4">
+                <AlertCircle className="text-emerald-500" size={24} />
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Order Confirmation
+                </h2>
+              </div>
+              <p className="text-gray-600 mb-6">
+                Your order has been placed successfully.
+                {orderId && <span> Order ID: {orderId}</span>}
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => navigate("/account")}
+                  className="flex-1 bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
+                >
+                  Go to Dashboard Orders
+                </button>
+                <button
+                  onClick={() => setShowOrderSuccessModal(false)}
+                  className="flex-1 border border-gray-300 text-gray-900 py-3 rounded-lg font-semibold hover:bg-gray-50 transition"
+                >
+                  Ok
                 </button>
               </div>
             </div>
@@ -314,7 +364,10 @@ const CheckOut = () => {
             {/* Error Message */}
             {error && (
               <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-                <AlertCircle className="text-red-500 flex-shrink-0 mt-0.5" size={18} />
+                <AlertCircle
+                  className="text-red-500 flex-shrink-0 mt-0.5"
+                  size={18}
+                />
                 <p className="text-sm text-red-700">{error}</p>
               </div>
             )}
@@ -357,7 +410,9 @@ const CheckOut = () => {
                     </div>
                   ))
                 ) : (
-                  <p className="text-center text-gray-400 py-4">Your cart is empty</p>
+                  <p className="text-center text-gray-400 py-4">
+                    Your cart is empty
+                  </p>
                 )}
               </div>
 

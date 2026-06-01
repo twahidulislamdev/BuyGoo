@@ -342,7 +342,7 @@ const OTPVerification = () => {
                   <button
                     type="submit"
                     disabled={submitted || !otpComplete}
-                    className="w-full h-[44px] rounded-xl bg-[#111827] text-white text-sm font-medium hover:bg-black transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_14px_40px_-20px_rgba(0,0,0,0.8)]"
+                    className="w-full h-[44px] rounded-xl bg-[#111827] text-white text-sm font-medium hover:bg-black transition-all duration-200 disabled:opacity-50 cursor-pointer shadow-[0_14px_40px_-20px_rgba(0,0,0,0.8)]"
                   >
                     {submitted ? "Verifying..." : "Verify OTP"}
                   </button>

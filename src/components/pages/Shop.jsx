@@ -28,7 +28,7 @@ const Shop = () => {
     <div className="w-full py-10 lg:mx-0 overflow-x-hidden relative">
       <Container>
         {/* 🔘 New Filter Button (Mobile Only) - Modern Design */}
-        <div className="lg:hidden mb-6 flex justify-start pl-3">
+        <div className="lg:hidden mb-5 flex justify-start pl-3">
           <div
             className="relative flex justify-between items-center gap-x-2 bg-transparent px-6 py-3 border-2 border-black text-center text-black rounded cursor-pointer transition-all hover:bg-black hover:text-white active:scale-95"
             onClick={() => setShowFilter(true)}
@@ -44,7 +44,7 @@ const Shop = () => {
           {/*-----------------  Sidebar ------------- */}
           <div
             className={`
-              fixed lg:static top-0 left-0 h-full lg:h-auto p-5 lg:p-0
+              fixed lg:static top-0 left-0 h-full lg:h-auto py-25 lg:py-0 px-5
               w-[80%] sm:w-[65%] lg:w-[20%]
               bg-white z-50 lg:z-auto
               transform transition-transform duration-300
@@ -56,22 +56,22 @@ const Shop = () => {
           >
             {/* Close Button (Mobile) */}
             <div className="lg:hidden mb-5 flex justify-between items-center">
-              <h2 className="font-semibold text-xl">Filters</h2>
+              <h2 className="font-semibold text-xl">Filters Products</h2>
               <button
                 onClick={() => setShowFilter(false)}
-                className="text-black text-xl w-8 h-8 hover:text-gray-500 border-2 rounded-lg -mt-2"
+                className="text-black text-xl w-8 h-8 hover:text-gray-500 border-2 rounded-lg -mt-1"
               >
                 ✕
               </button>
             </div>
 
             {/* Desktop Filter Title */}
-            <h2 className="hidden lg:block text-xl font-semibold mb-5">
+            <h2 className="hidden lg:block text-2xl font-semibold mb-3">
               Filter Products
             </h2>
 
             {/* 🔹 Category */}
-            <div className="mb-6 border-b pb-4">
+            <div className="mb-3 border-b pb-3">
               <p className="font-semibold mb-3">Category</p>
               <div className="space-y-2 text-sm">
                 {["All", "Smartphone", "Laptop", "Watch"].map((cat) => (
@@ -87,7 +87,7 @@ const Shop = () => {
             </div>
 
             {/* 🔹 Brand */}
-            <div className="mb-6 border-b pb-4">
+            <div className="mb-5 border-b pb-3">
               <p className="font-semibold mb-3">Brand</p>
               <div className="space-y-2 text-sm">
                 {["Apple", "Samsung", "Xiaomi", "Realme"].map((brand) => (
@@ -103,7 +103,7 @@ const Shop = () => {
             </div>
 
             {/* 🔹 Display Size */}
-            <div className="mb-6 border-b pb-4">
+            <div className="mb-5 border-b pb-3">
               <p className="font-semibold mb-3">Display Size</p>
               <div className="space-y-2 text-sm">
                 {['4"-5"', '5"-6"', '6"+'].map((size) => (
@@ -119,7 +119,7 @@ const Shop = () => {
             </div>
 
             {/* 🔹 RAM */}
-            <div className="mb-6 border-b pb-4">
+            <div className="mb-5 border-b pb-3">
               <p className="font-semibold mb-3">RAM</p>
               <div className="space-y-2 text-sm">
                 {["2GB", "4GB", "6GB", "8GB"].map((ram) => (
@@ -135,7 +135,7 @@ const Shop = () => {
             </div>
 
             {/* 🔹 Storage (ROM) */}
-            <div className="mb-6 border-b pb-4">
+            <div className="mb-5 border-b pb-3">
               <p className="font-semibold mb-3">Storage</p>
               <div className="space-y-2 text-sm">
                 {["32GB", "64GB", "128GB", "256GB"].map((rom) => (
@@ -151,7 +151,7 @@ const Shop = () => {
             </div>
 
             {/* 🔹 Color Selection */}
-            <div className="mb-6 border-b pb-4">
+            <div className="mb-5 border-b pb-3">
               <p className="font-semibold mb-3">Color</p>
               <div className="space-y-3">
                 {[

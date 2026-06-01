@@ -105,14 +105,14 @@ export default function UserAccountDropdown({ className = "" }) {
                 <Link
                   to="/login"
                   onClick={closeDropdown}
-                  className="rounded-xl bg-mainColor px-4 py-3 text-center text-sm font-medium text-white hover:bg-mainColor/90 cursor-pointer transition-all duration-300"
+                  className="rounded-xl px-3 py-3.5 text-center text-base font-semibold text-black border-2 border-neutral-500 hover:bg-neutral-200 cursor-pointer transition-all duration-300"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
                   onClick={closeDropdown}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-medium text-slate-800 hover:bg-slate-100 cursor-pointer transition-all duration-300"
+                  className="rounded-xl border-2 border-neutral-500 px-3 py-3.5 text-center text-base font-semibold  bg-black text-white hover:bg-mainColor cursor-pointer transition-all duration-300"
                 >
                   Create Account
                 </Link>
