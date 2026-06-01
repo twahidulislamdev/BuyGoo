@@ -35,6 +35,14 @@ const Header = () => {
     { name: "CONTACT", path: "/contact" },
     { name: "PAGES", path: "/pages" },
   ];
+  const categoryItems = [
+    { name: "Mobile" },
+    { name: "Laptop" },
+    { name: "Tablets" },
+    { name: "Monitors" },
+    { name: "Smart Watches" },
+    { name: "AirPods" },
+  ];
 
   return (
     <>
@@ -141,7 +149,9 @@ const Header = () => {
           <div className="absolute left-0 top-0 h-full w-[80%] max-w-xs bg-white shadow-xl p-5 overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-sm text-gray-500 uppercase tracking-wider">All Categories</p>
+                <p className="text-sm text-gray-500 uppercase tracking-wider">
+                  All Categories
+                </p>
                 <h2 className="text-xl font-semibold text-black">Browse</h2>
               </div>
               <button
@@ -161,7 +171,7 @@ const Header = () => {
               />
             </div>
             <nav className="space-y-3">
-              {menuItems.map((item, idx) => (
+              {categoryItems.map((item, idx) => (
                 <Link
                   to={item.path}
                   key={idx}

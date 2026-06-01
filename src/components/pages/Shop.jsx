@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Flex from "../Flex";
-import Container from "../Container";
 import axios from "axios";
-import { IoFilter } from "react-icons/io5";
+import Container from "../Container";
 import ProductCard from "../ProductCard";
+import { IoFilter, IoLogoDropbox } from "react-icons/io5";
+import { FcAlphabeticalSortingAz } from "react-icons/fc";
 
 const Shop = () => {
   const [myProduct, setMyProduct] = useState([]);
@@ -28,15 +29,22 @@ const Shop = () => {
     <div className="w-full py-10 lg:mx-0 overflow-x-hidden relative">
       <Container>
         {/* 🔘 New Filter Button (Mobile Only) - Modern Design */}
-        <div className="lg:hidden mb-5 flex justify-start pl-3">
+        <div className="lg:hidden mb-5 flex justify-between px-3">
           <div
-            className="relative flex justify-between items-center gap-x-2 bg-transparent px-6 py-3 border-2 border-black text-center text-black rounded cursor-pointer transition-all hover:bg-black hover:text-white active:scale-95"
+            className="relative flex justify-between items-center text-sm gap-x-2 bg-transparent px-3 py-1 border-2 border-black text-center text-black rounded cursor-pointer transition-all hover:bg-black hover:text-white active:scale-95"
             onClick={() => setShowFilter(true)}
           >
             <IoFilter className="text-black text-2xl transition-colors group-hover:text-white" />
             <h6 className="text-lg font-semibold text-black transition-colors group-hover:text-white">
               FILTERS
             </h6>
+          </div>
+          {/* Sorting */}
+          <div className="relative flex justify-between items-center text-sm gap-x-2 bg-transparent px-3 py-1 border-2 border-black text-center text-black rounded cursor-pointer transition-all hover:bg-black hover:text-white active:scale-95">
+            <h6 className="text-lg font-semibold text-black transition-colors group-hover:text-white">
+              Sorting
+            </h6>
+            <FcAlphabeticalSortingAz className="text-black text-2xl transition-colors group-hover:text-white" />
           </div>
         </div>
 

@@ -13,7 +13,7 @@ const NewArrivals = () => {
     async function fetchProducts() {
       try {
         const res = await axios.get(
-          "http://localhost:3000/api/v1/product/getallproducts",
+          "https://buygoo-backend.onrender.com/api/v1/product/getallproducts",
         );
         const allProducts = res.data.products || res.data;
         // Filter products by "New Arrivals" tag
