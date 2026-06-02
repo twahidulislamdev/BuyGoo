@@ -43,6 +43,14 @@ export const useCartStore = create(
 );
 
 // Delivery Method
+export const DELIVERY_PRICES = {
+  store: 0,
+  home: 120,
+};
+
+export const getDeliveryShipping = (method = "store") =>
+  DELIVERY_PRICES[method] ?? 0;
+
 export const useDeliveryStore = create((set) => ({
   deliveryMethod: "store",
   setDeliveryMethod: (method) => set({ deliveryMethod: method }),

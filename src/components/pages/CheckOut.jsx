@@ -9,7 +9,11 @@ import {
   Loader,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useCartStore, useDeliveryStore } from "../../stores/cartStore";
+import {
+  getDeliveryShipping,
+  useCartStore,
+  useDeliveryStore,
+} from "../../stores/cartStore";
 import { useAuthStore } from "../../stores/authStore";
 import { orderApi } from "../../config/api";
 
@@ -48,7 +52,7 @@ const CheckOut = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { cart, clearCart } = useCartStore();
-  const { deliveryMethod } = useDeliveryStore();
+  const { deliveryMethod, setDeliveryMethod } = useDeliveryStore();
   const { isLoggedIn, email: storedEmail, checkLogin } = useAuthStore();
 
   // Passed Data from Add to Cart Page
@@ -106,9 +110,7 @@ const CheckOut = () => {
 
   // Add Shipping Price
   const shipping =
-    products.length === 0
-      ? 0
-      : (passedState.shipping ?? (deliveryMethod === "home" ? 5 : 0));
+    products.length === 0 ? 0 : getDeliveryShipping(deliveryMethod);
 
   // Calculate Total Price
   const total = (subtotal + shipping).toFixed(2);
@@ -323,105 +325,183 @@ const CheckOut = () => {
         )}
         {/*------------------ Order Success Modal end --------------- */}
 
-        <div className="flex flex-wrap gap-6 items-start justify-center">
+        <div className="flex flex-wrap gap-5 items-start justify-center">
           {/* ── LEFT: Billing Form ── */}
-          <div className="flex-1 w-[50%] border border-neutral-300 rounded-xl p-5">
-            <h2
-              className="text-[17px] font-medium mb-5"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              Billing Details
-            </h2>
+          <div className="flex-1 w-[50%]">
+            {/* Billing Info Field Start */}
+            <div className=" border border-neutral-300 rounded-xl p-5">
+              <h2 className="text-sm font-semibold mb-5 text-neutral-800 uppercase  tracking-wide">Billing Details</h2>
 
-            {/* First / Last */}
-            <div className="flex gap-3">
-              <Field label="First Name" required>
-                <input
-                  type="text"
-                  name="firstName"
-                  placeholder="John"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                />
-              </Field>
-              <Field label="Last Name" required>
-                <input
-                  type="text"
-                  name="lastName"
-                  placeholder="Doe"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                />
-              </Field>
-            </div>
-
-            {/* Phone / Email */}
-            <div className="flex gap-3">
-              <Field label="Phone Number" required>
-                <input
-                  type="text"
-                  name="phone"
-                  placeholder="+1 555 000 0000"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                />
-              </Field>
-              <Field label="Email Address" required>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="john@example.com"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                />
-              </Field>
-            </div>
-
-            {/* Address */}
-            <Field label="Address" required>
-              <input
-                type="text"
-                name="address"
-                placeholder="123 Main Street, City, Country"
-                value={formData.address}
-                onChange={handleInputChange}
-              />
-            </Field>
-
-            {/* Special Note */}
-            <Field label="Special Note" optional>
-              <textarea
-                name="specialNote"
-                rows={3}
-                placeholder="Notes about your order, e.g. special notes for delivery."
-                value={formData.specialNote}
-                onChange={handleInputChange}
-              />
-            </Field>
-
-            {/* Save info */}
-            <label className="flex items-center gap-2.5 mt-1 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={saveInfo}
-                onChange={(e) => setSaveInfo(e.target.checked)}
-                className="w-4 h-4 accent-black cursor-pointer"
-              />
-              <span className="text-[12px] text-gray-400">
-                Save this info for faster checkout next time
-              </span>
-            </label>
-
-            {/* Error Message */}
-            {error && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-                <AlertCircle
-                  className="text-red-500 flex-shrink-0 mt-0.5"
-                  size={18}
-                />
-                <p className="text-sm text-red-700">{error}</p>
+              {/* First / Last */}
+              <div className="flex gap-3">
+                <Field label="First Name" required>
+                  <input
+                    type="text"
+                    name="firstName"
+                    placeholder="John"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                  />
+                </Field>
+                <Field label="Last Name" required>
+                  <input
+                    type="text"
+                    name="lastName"
+                    placeholder="Doe"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                  />
+                </Field>
               </div>
-            )}
+
+              {/* Phone / Email */}
+              <div className="flex gap-3">
+                <Field label="Phone Number" required>
+                  <input
+                    type="text"
+                    name="phone"
+                    placeholder="+1 555 000 0000"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                  />
+                </Field>
+                <Field label="Email Address" required>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="john@example.com"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                  />
+                </Field>
+              </div>
+
+              {/* Address */}
+              <Field label="Address" required>
+                <input
+                  type="text"
+                  name="address"
+                  placeholder="123 Main Street, City, Country"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                />
+              </Field>
+
+              {/* Special Note */}
+              <Field label="Special Note" optional>
+                <textarea
+                  name="specialNote"
+                  rows={3}
+                  placeholder="Notes about your order, e.g. special notes for delivery."
+                  value={formData.specialNote}
+                  onChange={handleInputChange}
+                />
+              </Field>
+
+              {/* Save info */}
+              <label className="flex items-center gap-2.5 mt-1 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={saveInfo}
+                  onChange={(e) => setSaveInfo(e.target.checked)}
+                  className="w-4 h-4 accent-black cursor-pointer"
+                />
+                <span className="text-[12px] text-gray-400">
+                  Save this info for faster checkout next time
+                </span>
+              </label>
+
+              {/* Error Message */}
+              {error && (
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+                  <AlertCircle
+                    className="text-red-500 flex-shrink-0 mt-0.5"
+                    size={18}
+                  />
+                  <p className="text-sm text-red-700">{error}</p>
+                </div>
+              )}
+
+              {/* Delivery Method */}
+            </div>
+
+            {/* Delivery Method Selection Start */}
+            <div className="my-5">
+              <label className="block text-sm font-semibold uppercase tracking-wide text-neutral-800 mb-2 ml-0.5">
+                Delivery Method<span className="text-red-500 ml-0.5">*</span>
+              </label>
+              <div className="flex flex-row gap-3">
+                {[
+                  {
+                    id: "store",
+                    label: "Store Pickup",
+                    sub: "Zero charge",
+                    price: "Free",
+                    isFree: true,
+                  },
+                  {
+                    id: "home",
+                    label: "Home Delivery",
+                    sub: "Delivered to your address",
+                    price: "120",
+                    isFree: false,
+                  },
+                ].map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => setDeliveryMethod(option.id)}
+                    aria-pressed={deliveryMethod === option.id}
+                    className={`flex flex-1 items-center justify-between px-4 py-3 rounded-[10px] transition text-left w-full border cursor-pointer ${
+                      deliveryMethod === option.id
+                        ? "bg-black text-white border-gray-900"
+                        : "border-[#e5e3dc] bg-[#fafaf8] text-black hover:border-gray-900"
+                    }`}
+                  >
+                    <div>
+                      <p className="text-[14px] font-semibold">
+                        {option.label}
+                      </p>
+                      <p
+                        className={`text-[12px] mt-0.5 ${
+                          deliveryMethod === option.id
+                            ? "text-gray-300"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        {option.sub}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`text-[13px] font-bold px-2.5 py-1 rounded-lg ${
+                          deliveryMethod === option.id
+                            ? "bg-white/20 text-white"
+                            : "bg-neutral-100 text-black border border-neutral-300"
+                        }`}
+                      >
+                        {option.isFree ? "Free" : `৳${option.price}`}
+                      </span>
+                      <div
+                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                          deliveryMethod === option.id
+                            ? "border-white"
+                            : "border-gray-300"
+                        }`}
+                      >
+                        <div
+                          className={`w-2.5 h-2.5 rounded-full bg-white transition-all ${
+                            deliveryMethod === option.id
+                              ? "opacity-100 scale-100"
+                              : "opacity-0 scale-50"
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* ── RIGHT PANEL ── */}

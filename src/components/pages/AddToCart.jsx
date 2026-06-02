@@ -1,13 +1,11 @@
 import Container from "../Container";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useCartStore, useDeliveryStore } from "../../stores/cartStore";
+import { useCartStore } from "../../stores/cartStore";
 
 export default function ShoppingCart() {
   const { cart, removeFromCart, updateQuantity } = useCartStore();
-  const { deliveryMethod, setDeliveryMethod } = useDeliveryStore();
   const items = cart.length > 0 ? cart : [];
-  const delivery = deliveryMethod || "store";
 
   // Update Quantity
   const updateQty = (id, delta) => {
@@ -31,10 +29,7 @@ export default function ShoppingCart() {
     0,
   );
 
-  // Delivery
-  const shipping = delivery === "store" ? 0 : 120;
-  // Total
-  const total = (subtotal + shipping).toFixed(2);
+  const total = subtotal.toFixed(2);
 
   return (
     <div className="bg-white text-black font-sans p-2 flex items-start justify-center">
@@ -205,15 +200,6 @@ export default function ShoppingCart() {
                     {subtotal.toFixed(2)}
                   </span>
                 </div>
-                <div className="flex justify-between text-black text-base font-medium">
-                  <span>Shipping</span>
-                  <span className="text-black">
-                    <span className="text-base font-extrabold text-black">
-                      ৳
-                    </span>{" "}
-                    {shipping.toFixed(2)}
-                  </span>
-                </div>
               </div>
 
               {/* Divider */}
@@ -228,138 +214,10 @@ export default function ShoppingCart() {
                 </span>
               </div>
 
-              {/* Delivery Method */}
-              <div>
-                <p className="text-sm font-bold text-black uppercase tracking-wider mb-2.5">
-                  Delivery Method
-                </p>
-
-                {/* Delivery Method Options */}
-                <div className="flex flex-col gap-2">
-                  {[
-                    {
-                      id: "store",
-                      icon: "🏪",
-                      label: "Store Pickup",
-                      sub: "Instant Collection",
-                      price: "Free",
-                      isFree: true,
-                    },
-                    {
-                      id: "insideDhaka",
-                      icon: "🚚",
-                      label: "Home Delivery (Inside Dhaka)",
-                      sub: "Arrives in 24 Hours",
-                      price: "80",
-                      isFree: false,
-                    },
-                    {
-                      id: "outsideDhaka",
-                      icon: "🚚",
-                      label: "Home Delivery (Outside Dhaka)",
-                      sub: "Arrives in 2-3 Days",
-                      price: "120",
-                      isFree: false,
-                    },
-                  ].map((option) => (
-                    <button
-                      key={option.id}
-                      onClick={() => setDeliveryMethod(option.id)}
-                      aria-pressed={delivery === option.id}
-                      className={`flex items-center justify-between px-4 py-3.5 rounded-[14px] transition text-left w-full border cursor-pointer ${
-                        delivery === option.id
-                          ? "bg-black text-white border-gray-900 transition duration-200"
-                          : "border-gray-200 bg-white text-black hover:border-gray-300 hover:bg-gray-50"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3.5">
-                        <div
-                          className={`w-[44px] h-[44px] rounded-[12px] flex items-center justify-center text-2xl transition ${
-                            delivery === option.id
-                              ? "bg-white/20 text-white"
-                              : "bg-gray-100 text-black"
-                          }`}
-                        >
-                          {option.icon}
-                        </div>
-
-                        <div>
-                          <p
-                            className={`text-[14px] font-semibold leading-tight ${
-                              delivery === option.id
-                                ? "text-white"
-                                : "text-gray-900"
-                            }`}
-                          >
-                            {option.label}
-                          </p>
-                          <p
-                            className={`text-[12px] mt-0.5 ${
-                              delivery === option.id
-                                ? "text-gray-300"
-                                : "text-gray-500"
-                            }`}
-                          >
-                            {option.sub}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        {/* Price badge */}
-                        {option.isFree ? (
-                          <span
-                            className={`text-[13px] font-bold px-2.5 py-1 rounded-lg px-3 py-1 ${
-                              delivery === option.id
-                                ? "bg-neutral-300 text-black"
-                                : "bg-neutral-100 text-black border border-neutral-300 rounded-lg"
-                            }`}
-                          >
-                            Free
-                          </span>
-                        ) : (
-                          <span
-                            className={`text-[15px] font-bold bg-neutral-100 text-black border border-neutral-300 px-5 py-1 rounded-lg ${
-                              delivery === option.id
-                                ? "bg-neutral-100 text-black border border-neutral-300 px-3 rounded-lg"
-                                : "text-gray-900 text-black"
-                            }`}
-                          >
-                            <span className="text-sm font-medium mr-0.5">
-                              <span className="text-base font-extrabold text-black">
-                                ৳
-                              </span>
-                            </span>
-                            {option.price}
-                          </span>
-                        )}
-
-                        {/* Radio dot */}
-                        <div
-                          className={`w-[20px] h-[20px] rounded-full border-2 flex items-center justify-center transition ${
-                            delivery === option.id
-                              ? "border-white"
-                              : "border-gray-300"
-                          }`}
-                        >
-                          <div
-                            className={`w-[10px] h-[10px] rounded-full transition-all duration-150 ${
-                              delivery === option.id
-                                ? "opacity-100 scale-100 bg-white"
-                                : "opacity-0 scale-50 bg-gray-900"
-                            }`}
-                          />
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* ── Checkout Button ── */}
               <Link
                 to="/checkout"
-                state={{ items, subtotal, shipping, total }}
+                state={{ items, subtotal }}
                 className="w-full bg-black text-white text-lg font-semibold py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 hover:bg-neutral-800 cursor-pointer active:scale-[0.99] shadow-sm"
               >
                 <span>Proceed to checkout</span>
