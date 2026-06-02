@@ -82,12 +82,20 @@ const CheckOut = () => {
     }
   }, [cart, passedState.items]);
 
-  // Check login on mount
+  // Verify server session on mount (local flags alone are not enough to place orders)
   useEffect(() => {
-    const loggedIn = checkLogin();
-    if (!loggedIn) {
-      setShowLoginModal(true);
-    }
+    let cancelled = false;
+
+    (async () => {
+      const loggedIn = await checkLogin();
+      if (!cancelled && !loggedIn) {
+        setShowLoginModal(true);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [checkLogin]);
 
   // Calculate Subtotal Price
@@ -138,7 +146,11 @@ const CheckOut = () => {
 
   // Handle place order
   const handlePlaceOrder = async () => {
-    if (!isLoggedIn) {
+    const hasValidSession = await checkLogin();
+    if (!hasValidSession) {
+      setError(
+        "Your session has expired. Please log in again to place your order.",
+      );
       setShowLoginModal(true);
       return;
     }
@@ -184,10 +196,19 @@ const CheckOut = () => {
         setShowOrderSuccessModal(true);
       }
     } catch (err) {
+      const status = err?.response?.status;
       const errorMessage =
         err?.response?.data?.message ||
         "Failed to place order. Please try again.";
-      setError(errorMessage);
+
+      if (status === 401) {
+        setShowLoginModal(true);
+        setError(
+          "Please log in again to place your order. Your session may have expired.",
+        );
+      } else {
+        setError(errorMessage);
+      }
       console.error("Order error:", err);
     } finally {
       setLoading(false);
@@ -240,7 +261,7 @@ const CheckOut = () => {
           </div>
         )}
 
-        {/* Order Success Modal */}
+        {/*------------------ Order Success Modal start --------------- */}
         {showOrderSuccessModal && (
           <div className="fixed inset-0  flex items-center justify-center z-50 px-4">
             <div className="relative w-full bg-white rounded-2xl p-8 max-w-sm border-2 border-green-500   overflow-hidden">
@@ -300,6 +321,7 @@ const CheckOut = () => {
             </div>
           </div>
         )}
+        {/*------------------ Order Success Modal end --------------- */}
 
         <div className="flex flex-wrap gap-6 items-start justify-center">
           {/* ── LEFT: Billing Form ── */}

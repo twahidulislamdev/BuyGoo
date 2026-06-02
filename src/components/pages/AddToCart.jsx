@@ -157,7 +157,7 @@ export default function ShoppingCart() {
                           −
                         </button>
                         <div className="w-px h-4 bg-neutral-200" />
-                        <span className="min-w-[28px] text-center text-[13px] font-semibold text-gray-900"> 
+                        <span className="min-w-[28px] text-center text-[13px] font-semibold text-gray-900">
                           {item.quantity || 1}
                         </span>
                         <div className="w-px h-4 bg-neutral-200" />
@@ -246,10 +246,18 @@ export default function ShoppingCart() {
                       isFree: true,
                     },
                     {
-                      id: "home",
+                      id: "insideDhaka",
                       icon: "🚚",
-                      label: "Home Delivery",
+                      label: "Home Delivery (Inside Dhaka)",
                       sub: "Arrives in 24 Hours",
+                      price: "80",
+                      isFree: false,
+                    },
+                    {
+                      id: "outsideDhaka",
+                      icon: "🚚",
+                      label: "Home Delivery (Outside Dhaka)",
+                      sub: "Arrives in 2-3 Days",
                       price: "120",
                       isFree: false,
                     },

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "../Container";
 import { useAuthStore, getFullName } from "../../stores/authStore";
+import { orderApi } from "../../config/api";
 
 const menuItems = [
   { label: "My Orders", description: "Review your recent purchases." },
@@ -30,7 +31,6 @@ const contentMap = {
 };
 
 // ------------------ My Orders Component -------------------
-import { orderApi } from "../../config/api";
 
 // ================== My Orders Component ===================
 const MyOrders = () => {
@@ -141,18 +141,27 @@ const CustomerDashboard = () => {
   const navigate = useNavigate();
   const { email, isLoggedIn, checkLogin, logout } = useAuthStore();
   const [activeItem, setActiveItem] = useState("My Orders");
+  const [authChecked, setAuthChecked] = useState(false);
 
   const { user } = useAuthStore();
   const fullName = getFullName(user, email);
 
   useEffect(() => {
-    checkLogin();
+    checkLogin().finally(() => setAuthChecked(true));
   }, [checkLogin]);
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
+
+  if (!authChecked) {
+    return (
+      <Container>
+        <div className="py-20 text-center text-gray-500">Loading your account...</div>
+      </Container>
+    );
+  }
 
   // If the user is not logged in, show a prompt to log in
   if (!isLoggedIn) {

@@ -64,18 +64,10 @@ export const useAuthStore = create(
       },
 
       checkLogin: async () => {
-        const loggedIn =
-          sessionStorage.getItem("buygoo_customer_logged_in") === "true";
-        const email = sessionStorage.getItem("buygoo_customer_email");
-
-        if (!loggedIn || !email) {
-          set({ isLoggedIn: false, email: null, user: null });
-          return false;
-        }
-
         try {
           const response = await customerAuthApi.getCurrentUser();
           const user = response?.data?.user;
+
           if (user?.email) {
             persistUserKeys(user);
             set({
@@ -86,20 +78,16 @@ export const useAuthStore = create(
             return true;
           }
         } catch {
-          // Session may have expired; keep local fallback below.
+          // Server session missing or expired.
         }
 
-        const user = {
-          email,
-          firstName: sessionStorage.getItem("buygoo_customer_first_name") || "",
-          lastName: sessionStorage.getItem("buygoo_customer_last_name") || "",
-        };
+        clearUserKeys();
         set({
-          isLoggedIn: true,
-          email,
-          user,
+          isLoggedIn: false,
+          email: null,
+          user: null,
         });
-        return true;
+        return false;
       },
 
       getDisplayName: () => {
